@@ -98,6 +98,7 @@ namespace Common {
   }; 
   return (setsockopt(fd, IPPROTO_IP, IP_ADD_MEMBERSHIP, &mreq, sizeof(mreq)) != -1); 
  }
+ 
  // Create listening TCP/UDP socket 
  [[nodiscard]] auto createSocket(Logger& logger, const SocketConfig& socket_cfg) -> int {
     std::string time_str;
