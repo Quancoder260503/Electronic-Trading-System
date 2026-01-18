@@ -1,6 +1,6 @@
 CXX = g++
-CXXSTD = -std=c++17
-CXXWARN = -Wall -Wextra -Wpedantic -Wshadow -Wconversion -Wcast-align -Werror
+CXXSTD = -std=c++20
+CXXWARN = -Wall -Wextra -Wpedantic -Wshadow -Wconversion -Wcast-align 
 OPT = -O2
 DEBUG ?= 0
 SAN = 

@@ -13,8 +13,8 @@
 #include <arpa/inet.h>
 #include <ifaddrs.h> 
 #include <fcntl.h> 
-#include "Macros.hpp"
-#include "Logging.hpp"
+#include "common/Macros.hpp"
+#include "common/Logging.hpp"
 
 namespace Common { 
 
@@ -91,7 +91,7 @@ namespace Common {
  }
 
  // add membership / subscription to the multicast stream specified
- auto join(int fd, const std::string &ip, const std::string &iface, int port) -> bool { 
+ inline auto join(int fd, const std::string &ip, const std::string &iface, int port) -> bool { 
   const ip_mreq mreq{ 
     {inet_addr(ip.c_str())}, 
     {htonl(INADDR_ANY)}
@@ -100,7 +100,7 @@ namespace Common {
  }
  
  // Create listening TCP/UDP socket 
- [[nodiscard]] auto createSocket(Logger& logger, const SocketConfig& socket_cfg) -> int {
+ [[nodiscard]] inline auto createSocket(Logger& logger, const SocketConfig& socket_cfg) -> int {
     std::string time_str;
     const auto ip = socket_cfg.ip.empty() ? getIfaceIP(socket_cfg.iface) : socket_cfg.ip;
     logger.log("%:% %() % cfg:%\n",

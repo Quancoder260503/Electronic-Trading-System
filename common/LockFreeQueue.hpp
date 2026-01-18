@@ -2,13 +2,13 @@
 #include <iostream> 
 #include <vector> 
 #include <atomic> 
-#include "Macros.hpp"
+#include "common/Macros.hpp"
 
 namespace Common { 
  template<typename T> 
  class LockFreeQueue final {
   public: 
-    LockFreeQueue(std::size_t num_elements) : store(num_elements, T()) { }
+    LockFreeQueue(std::size_t num_elements_) : store(num_elements_, T()) { }
     
     LockFreeQueue() = delete; 
     LockFreeQueue(const LockFreeQueue&) = delete; 

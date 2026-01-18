@@ -1,31 +1,20 @@
-#pragma once
-#include <functional>
+#include "common/TCPSocket.hpp"
 
-#include "Logging.hpp"
-#include "SocketUtil.hpp"
-
-namespace Common {
-constexpr size_t TCPBufferSize = 64 * 1024 * 1024;
-
-struct TCPSocket {
-  explicit TCPSocket(Logger &logger_) : logger(logger_) {
-    send_buffer.resize(TCPBufferSize);
-    recv_buffer.resize(TCPBufferSize);
-  }
+namespace Common { 
 
   // Create TCPSocket with provided attributes to either listen-on or connect-to
-  auto connect(const std::string &ip, const std::string &iface, int port,
+  auto TCPSocket::connect(const std::string &ip, const std::string &iface, int port,
                bool is_listening) noexcept -> int {
     const SocketConfig socket_config{ip, iface, port, false, is_listening, true};
     socket_fd = createSocket(logger, socket_config);
     socket_attribute.sin_addr.s_addr = INADDR_ANY;
-    socket_attribute.sin_port = htons(port);
+    socket_attribute.sin_port = htons(static_cast<__uint16_t>(port));
     socket_attribute.sin_family = AF_INET;
     return socket_fd;
   }
 
   // Called to write send data from buffers as well as check the data from the recv buffer
-  auto sendAndRecv() noexcept -> bool {
+  auto TCPSocket::sendAndRecv() noexcept -> bool {
     char ctrl[CMSG_SPACE(sizeof(struct timeval))];
     auto cmsg = reinterpret_cast<struct cmsghdr *>(&ctrl);
 
@@ -37,11 +26,12 @@ struct TCPSocket {
       next_recv_valid_index += read_size;
       Nanos kernel_time = 0;
       timeval time_kernel;
-      if (cmsg->cmsg_level == SOL_SOCKET && cmsg->cmsg_type == SCM_TIMESTAMP &&
-          cmsg->cmsg_len == CMSG_LEN(sizeof(time_kernel))) {
+      if (cmsg->cmsg_level == SOL_SOCKET && 
+          cmsg->cmsg_type  == SCM_TIMESTAMP &&
+          cmsg->cmsg_len   == CMSG_LEN(sizeof(time_kernel))) {
+
         memcpy(&time_kernel, CMSG_DATA(cmsg), sizeof(time_kernel));
-        kernel_time = time_kernel.tv_sec * NANOS_TO_SECS +
-                      time_kernel.tv_usec * NANOS_TO_MICROS;  // convert timestamp to nanoseconds
+        kernel_time = time_kernel.tv_sec * NANOS_TO_SECS + time_kernel.tv_usec * NANOS_TO_MICROS;  // convert timestamp to nanoseconds
       }
       const auto user_time = getCurrentNanos();
       logger.log("%:% %() % read socket:% len:% utime:% ktime:% diff:%\n", __FILE__, __LINE__,
@@ -61,34 +51,8 @@ struct TCPSocket {
   }
 
   // Write data in the send buffer
-  auto send(const void *data, size_t len) noexcept -> void {
+  auto TCPSocket::send(const void *data, size_t len) noexcept -> void {
     memcpy(send_buffer.data() + next_send_valid_index, data, len);
     next_send_valid_index += len;
   }
-
-  TCPSocket() = delete;
-
-  TCPSocket(const TCPSocket &) = delete;
-
-  TCPSocket(const TCPSocket &&) = delete;
-
-  TCPSocket &operator=(const TCPSocket &) = delete;
-
-  TCPSocket &operator=(const TCPSocket &&) = delete;
-
-  int socket_fd = -1;
-
-  std::vector<char> send_buffer;
-  size_t next_send_valid_index = 0;
-  std::vector<char> recv_buffer;
-  size_t next_recv_valid_index = 0;
-
-  struct sockaddr_in socket_attribute {};
-
-  // Function Wrapper to callback when there is data to be processed.
-  std::function<void(TCPSocket *s, Nanos rx_time)> recv_callback = nullptr;
-
-  std::string time_str;
-  Logger &logger;
-};
-}  // namespace Common
+}

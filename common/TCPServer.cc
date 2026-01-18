@@ -1,4 +1,4 @@
-#include "TCPServer.hpp"
+#include "common/TCPServer.hpp"
 
 namespace Common {
 // Start listening for connections on the provided interface and port
@@ -10,14 +10,14 @@ auto TCPServer::listen(const std::string &iface, int port) ->  void {
          "Listener socket failed to connect. interface : " + iface +
              " port : " + std::to_string(port) + " error : " + std::string(std::strerror(errno)));
 
-  ASSERT(addToEpollList(&listener_socket),
+  ASSERT(addToEpollList(&listener_socket) == EXIT_SUCCESS,
          "epoll_ctl() failed. error : " + std::string(std::strerror(errno)));
 }
 
 // Check for new connections or dead connections and update containers that track sockets
 auto TCPServer::poll() noexcept -> void {
-  const int max_events = 1 + send_sockets.size() + receive_sockets.size();
-  const int n = epoll_wait(epoll_fd, events, max_events, 0);
+  const size_t max_events = 1 + send_sockets.size() + receive_sockets.size();
+  const int n = epoll_wait(epoll_fd, events, static_cast<int>(max_events), 0);
   bool have_new_connection = false;
   for (int i = 0; i < n; i++) {
     const auto &event = events[i];
@@ -71,7 +71,7 @@ auto TCPServer::poll() noexcept -> void {
     auto socket = new TCPSocket(logger);
     socket->socket_fd = fd;
     socket->recv_callback = recv_callback;
-    ASSERT(addToEpollList(socket),
+    ASSERT(addToEpollList(socket) == EXIT_SUCCESS,
            "Unable to add socket. error : " + std::string(std::strerror(errno)));
     if (std::find(receive_sockets.begin(), receive_sockets.end(), socket) ==
         receive_sockets.end()) {
@@ -93,7 +93,7 @@ auto TCPServer::sendAndRecv() noexcept -> void {
 }
 
 
-auto TCPServer::addToEpollList(TCPSocket *socket) noexcept {
+auto TCPServer::addToEpollList(TCPSocket *socket) noexcept -> bool {
   epoll_event event{EPOLLET | EPOLLIN, {reinterpret_cast<void *>(socket)}};
   return epoll_ctl(epoll_fd, EPOLL_CTL_ADD, socket->socket_fd, &event);
 }

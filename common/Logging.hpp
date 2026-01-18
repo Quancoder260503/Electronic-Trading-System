@@ -2,10 +2,10 @@
 #include <string> 
 #include <fstream> 
 #include <cstdio> 
-#include "Macros.hpp"
-#include "LockFreeQueue.hpp"
-#include "ThreadUtil.hpp"
-#include "TimeUtil.hpp"
+#include "common/Macros.hpp"
+#include "common/LockFreeQueue.hpp"
+#include "common/ThreadUtil.hpp"
+#include "common/TimeUtil.hpp"
 
 namespace Common { 
   constexpr size_t LOCK_FREE_QUEUE_SIZE = 8 * 1024 * 1024; 

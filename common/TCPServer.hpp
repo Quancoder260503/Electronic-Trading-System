@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TCPSocket.hpp"
+#include "common/TCPSocket.hpp"
 
 namespace Common {
 struct TCPServer {
@@ -17,7 +17,7 @@ struct TCPServer {
 
  private:
   // Add socket to container 
-  auto addToEpollList(TCPSocket *socket) noexcept;
+  auto addToEpollList(TCPSocket *socket) noexcept -> bool ;
 
  public:
   int epoll_fd = -1;

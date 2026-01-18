@@ -1,0 +1,247 @@
+Creating TCPServer on iface:lo port:8001
+SocketUtil.hpp:107 createSocket() Sat Jan 17 16:16:22 2026 cfg:SocketCfg[ip: iface:lo port:8001 is_udp:0 is_listening:1 needs_SO_timestamp:1]
+Connecting TCPClient-[0] on ip:127.0.0.1 iface:lo port:8001
+SocketUtil.hpp:107 createSocket() Sat Jan 17 16:16:23 2026 cfg:SocketCfg[ip:127.0.0.1 iface:lo port:8001 is_udp:0 is_listening:0 needs_SO_timestamp:1]
+TCPServer.cc:28 poll() Sat Jan 17 16:16:23 2026 EPOLLIN listener_socket:5
+TCPServer.cc:57 poll() Sat Jan 17 16:16:23 2026 have_new_connection
+TCPServer.cc:68 poll() Sat Jan 17 16:16:23 2026 accepted socket:8
+TCPServer.cc:57 poll() Sat Jan 17 16:16:23 2026 have_new_connection
+Connecting TCPClient-[1] on ip:127.0.0.1 iface:lo port:8001
+SocketUtil.hpp:107 createSocket() Sat Jan 17 16:16:23 2026 cfg:SocketCfg[ip:127.0.0.1 iface:lo port:8001 is_udp:0 is_listening:0 needs_SO_timestamp:1]
+TCPServer.cc:28 poll() Sat Jan 17 16:16:23 2026 EPOLLIN listener_socket:5
+TCPServer.cc:57 poll() Sat Jan 17 16:16:23 2026 have_new_connection
+TCPServer.cc:68 poll() Sat Jan 17 16:16:23 2026 accepted socket:10
+TCPServer.cc:57 poll() Sat Jan 17 16:16:23 2026 have_new_connection
+Connecting TCPClient-[2] on ip:127.0.0.1 iface:lo port:8001
+SocketUtil.hpp:107 createSocket() Sat Jan 17 16:16:23 2026 cfg:SocketCfg[ip:127.0.0.1 iface:lo port:8001 is_udp:0 is_listening:0 needs_SO_timestamp:1]
+TCPServer.cc:28 poll() Sat Jan 17 16:16:23 2026 EPOLLIN listener_socket:5
+TCPServer.cc:57 poll() Sat Jan 17 16:16:23 2026 have_new_connection
+TCPServer.cc:68 poll() Sat Jan 17 16:16:23 2026 accepted socket:12
+TCPServer.cc:57 poll() Sat Jan 17 16:16:23 2026 have_new_connection
+Connecting TCPClient-[3] on ip:127.0.0.1 iface:lo port:8001
+SocketUtil.hpp:107 createSocket() Sat Jan 17 16:16:23 2026 cfg:SocketCfg[ip:127.0.0.1 iface:lo port:8001 is_udp:0 is_listening:0 needs_SO_timestamp:1]
+TCPServer.cc:28 poll() Sat Jan 17 16:16:23 2026 EPOLLIN listener_socket:5
+TCPServer.cc:57 poll() Sat Jan 17 16:16:23 2026 have_new_connection
+TCPServer.cc:68 poll() Sat Jan 17 16:16:23 2026 accepted socket:14
+TCPServer.cc:57 poll() Sat Jan 17 16:16:23 2026 have_new_connection
+Connecting TCPClient-[4] on ip:127.0.0.1 iface:lo port:8001
+SocketUtil.hpp:107 createSocket() Sat Jan 17 16:16:23 2026 cfg:SocketCfg[ip:127.0.0.1 iface:lo port:8001 is_udp:0 is_listening:0 needs_SO_timestamp:1]
+TCPServer.cc:28 poll() Sat Jan 17 16:16:23 2026 EPOLLIN listener_socket:5
+TCPServer.cc:57 poll() Sat Jan 17 16:16:23 2026 have_new_connection
+TCPServer.cc:68 poll() Sat Jan 17 16:16:23 2026 accepted socket:16
+TCPServer.cc:57 poll() Sat Jan 17 16:16:23 2026 have_new_connection
+Sending TCPClient-[0] CLIENT-[0] : Sending 0
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:7 len:22
+TCPServer.cc:33 poll() Sat Jan 17 16:16:23 2026 EPOLLIN socket:8
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:8 len:22 utime:1768666583919367511 ktime:1768666583919330000 diff:37511
+TCPServer::defaultRecvCallback() socket:8 len:22 rx:1768666583919330000
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:8 len:47
+TCPServer::defaultRecvFinishedCallback()
+Sending TCPClient-[1] CLIENT-[1] : Sending 1
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:9 len:22
+TCPServer.cc:33 poll() Sat Jan 17 16:16:23 2026 EPOLLIN socket:10
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:10 len:22 utime:1768666583919433124 ktime:1768666583919409000 diff:24124
+TCPServer::defaultRecvCallback() socket:10 len:22 rx:1768666583919409000
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:10 len:47
+TCPServer::defaultRecvFinishedCallback()
+Sending TCPClient-[2] CLIENT-[2] : Sending 2
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:11 len:22
+TCPServer.cc:33 poll() Sat Jan 17 16:16:23 2026 EPOLLIN socket:12
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:12 len:22 utime:1768666583919491693 ktime:1768666583919468000 diff:23693
+TCPServer::defaultRecvCallback() socket:12 len:22 rx:1768666583919468000
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:12 len:47
+TCPServer::defaultRecvFinishedCallback()
+Sending TCPClient-[3] CLIENT-[3] : Sending 3
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:13 len:22
+TCPServer.cc:33 poll() Sat Jan 17 16:16:23 2026 EPOLLIN socket:14
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:14 len:22 utime:1768666583919547617 ktime:1768666583919524000 diff:23617
+TCPServer::defaultRecvCallback() socket:14 len:22 rx:1768666583919524000
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:14 len:47
+TCPServer::defaultRecvFinishedCallback()
+Sending TCPClient-[4] CLIENT-[4] : Sending 4
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:15 len:22
+TCPServer.cc:33 poll() Sat Jan 17 16:16:23 2026 EPOLLIN socket:16
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:16 len:22 utime:1768666583919603442 ktime:1768666583919579000 diff:24442
+TCPServer::defaultRecvCallback() socket:16 len:22 rx:1768666583919579000
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:16 len:47
+TCPServer::defaultRecvFinishedCallback()
+Sending TCPClient-[0] CLIENT-[0] : Sending 100
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:7 len:47 utime:1768666583919631904 ktime:1768666583919381000 diff:250904
+TCPSocket::defaultRecvCallback() socket:7 len:0 rx:1768666583919381000 msg:TCPServer received msg : CLIENT-[0] : Sending 0
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:7 len:24
+TCPServer.cc:33 poll() Sat Jan 17 16:16:23 2026 EPOLLIN socket:8
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:8 len:24 utime:1768666583919659787 ktime:1768666583919642000 diff:17787
+TCPServer::defaultRecvCallback() socket:8 len:24 rx:1768666583919642000
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:8 len:49
+TCPServer::defaultRecvFinishedCallback()
+Sending TCPClient-[1] CLIENT-[1] : Sending 101
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:9 len:47 utime:1768666583919687939 ktime:1768666583919443000 diff:244939
+TCPSocket::defaultRecvCallback() socket:9 len:0 rx:1768666583919443000 msg:TCPServer received msg : CLIENT-[1] : Sending 1
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:9 len:24
+TCPServer.cc:33 poll() Sat Jan 17 16:16:23 2026 EPOLLIN socket:10
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:10 len:24 utime:1768666583919749604 ktime:1768666583919698000 diff:51604
+TCPServer::defaultRecvCallback() socket:10 len:24 rx:1768666583919698000
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:10 len:49
+TCPServer::defaultRecvFinishedCallback()
+Sending TCPClient-[2] CLIENT-[2] : Sending 102
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:11 len:47 utime:1768666583919782305 ktime:1768666583919501000 diff:281305
+TCPSocket::defaultRecvCallback() socket:11 len:0 rx:1768666583919501000 msg:TCPServer received msg : CLIENT-[2] : Sending 2
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:11 len:24
+TCPServer.cc:33 poll() Sat Jan 17 16:16:23 2026 EPOLLIN socket:12
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:12 len:24 utime:1768666583919811419 ktime:1768666583919792000 diff:19419
+TCPServer::defaultRecvCallback() socket:12 len:24 rx:1768666583919792000
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:12 len:49
+TCPServer::defaultRecvFinishedCallback()
+Sending TCPClient-[3] CLIENT-[3] : Sending 103
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:13 len:47 utime:1768666583919838019 ktime:1768666583919557000 diff:281019
+TCPSocket::defaultRecvCallback() socket:13 len:0 rx:1768666583919557000 msg:TCPServer received msg : CLIENT-[3] : Sending 3
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:13 len:24
+TCPServer.cc:33 poll() Sat Jan 17 16:16:23 2026 EPOLLIN socket:14
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:14 len:24 utime:1768666583919867003 ktime:1768666583919848000 diff:19003
+TCPServer::defaultRecvCallback() socket:14 len:24 rx:1768666583919848000
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:14 len:49
+TCPServer::defaultRecvFinishedCallback()
+Sending TCPClient-[4] CLIENT-[4] : Sending 104
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:15 len:47 utime:1768666583919892601 ktime:1768666583919613000 diff:279601
+TCPSocket::defaultRecvCallback() socket:15 len:0 rx:1768666583919613000 msg:TCPServer received msg : CLIENT-[4] : Sending 4
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:15 len:24
+TCPServer.cc:33 poll() Sat Jan 17 16:16:23 2026 EPOLLIN socket:16
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:16 len:24 utime:1768666583919922056 ktime:1768666583919902000 diff:20056
+TCPServer::defaultRecvCallback() socket:16 len:24 rx:1768666583919902000
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:16 len:49
+TCPServer::defaultRecvFinishedCallback()
+Sending TCPClient-[0] CLIENT-[0] : Sending 200
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:7 len:49 utime:1768666583919946682 ktime:1768666583919670000 diff:276682
+TCPSocket::defaultRecvCallback() socket:7 len:0 rx:1768666583919670000 msg:TCPServer received msg : CLIENT-[0] : Sending 100
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:7 len:24
+TCPServer.cc:33 poll() Sat Jan 17 16:16:23 2026 EPOLLIN socket:8
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:8 len:24 utime:1768666583919974023 ktime:1768666583919956000 diff:18023
+TCPServer::defaultRecvCallback() socket:8 len:24 rx:1768666583919956000
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:8 len:49
+TCPServer::defaultRecvFinishedCallback()
+Sending TCPClient-[1] CLIENT-[1] : Sending 201
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:9 len:49 utime:1768666583920001073 ktime:1768666583919762000 diff:239073
+TCPSocket::defaultRecvCallback() socket:9 len:0 rx:1768666583919762000 msg:TCPServer received msg : CLIENT-[1] : Sending 101
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:9 len:24
+TCPServer.cc:33 poll() Sat Jan 17 16:16:23 2026 EPOLLIN socket:10
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:10 len:24 utime:1768666583920028925 ktime:1768666583920011000 diff:17925
+TCPServer::defaultRecvCallback() socket:10 len:24 rx:1768666583920011000
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:10 len:49
+TCPServer::defaultRecvFinishedCallback()
+Sending TCPClient-[2] CLIENT-[2] : Sending 202
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:11 len:49 utime:1768666583920054924 ktime:1768666583919821000 diff:233924
+TCPSocket::defaultRecvCallback() socket:11 len:0 rx:1768666583919821000 msg:TCPServer received msg : CLIENT-[2] : Sending 102
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:11 len:24
+TCPServer.cc:33 poll() Sat Jan 17 16:16:23 2026 EPOLLIN socket:12
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:12 len:24 utime:1768666583920083037 ktime:1768666583920065000 diff:18037
+TCPServer::defaultRecvCallback() socket:12 len:24 rx:1768666583920065000
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:12 len:49
+TCPServer::defaultRecvFinishedCallback()
+Sending TCPClient-[3] CLIENT-[3] : Sending 203
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:13 len:49 utime:1768666583920108293 ktime:1768666583919876000 diff:232293
+TCPSocket::defaultRecvCallback() socket:13 len:0 rx:1768666583919876000 msg:TCPServer received msg : CLIENT-[3] : Sending 103
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:13 len:24
+TCPServer.cc:33 poll() Sat Jan 17 16:16:23 2026 EPOLLIN socket:14
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:14 len:24 utime:1768666583920137137 ktime:1768666583920118000 diff:19137
+TCPServer::defaultRecvCallback() socket:14 len:24 rx:1768666583920118000
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:14 len:49
+TCPServer::defaultRecvFinishedCallback()
+Sending TCPClient-[4] CLIENT-[4] : Sending 204
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:15 len:49 utime:1768666583920161743 ktime:1768666583919932000 diff:229743
+TCPSocket::defaultRecvCallback() socket:15 len:0 rx:1768666583919932000 msg:TCPServer received msg : CLIENT-[4] : Sending 104
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:15 len:24
+TCPServer.cc:33 poll() Sat Jan 17 16:16:23 2026 EPOLLIN socket:16
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:16 len:24 utime:1768666583920191319 ktime:1768666583920171000 diff:20319
+TCPServer::defaultRecvCallback() socket:16 len:24 rx:1768666583920171000
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:16 len:49
+TCPServer::defaultRecvFinishedCallback()
+Sending TCPClient-[0] CLIENT-[0] : Sending 300
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:7 len:49 utime:1768666583920215303 ktime:1768666583919983000 diff:232303
+TCPSocket::defaultRecvCallback() socket:7 len:0 rx:1768666583919983000 msg:TCPServer received msg : CLIENT-[0] : Sending 200
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:7 len:24
+TCPServer.cc:33 poll() Sat Jan 17 16:16:23 2026 EPOLLIN socket:8
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:8 len:24 utime:1768666583920242153 ktime:1768666583920225000 diff:17153
+TCPServer::defaultRecvCallback() socket:8 len:24 rx:1768666583920225000
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:8 len:49
+TCPServer::defaultRecvFinishedCallback()
+Sending TCPClient-[1] CLIENT-[1] : Sending 301
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:9 len:49 utime:1768666583920268973 ktime:1768666583920038000 diff:230973
+TCPSocket::defaultRecvCallback() socket:9 len:0 rx:1768666583920038000 msg:TCPServer received msg : CLIENT-[1] : Sending 201
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:9 len:24
+TCPServer.cc:33 poll() Sat Jan 17 16:16:23 2026 EPOLLIN socket:10
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:10 len:24 utime:1768666583920299300 ktime:1768666583920279000 diff:20300
+TCPServer::defaultRecvCallback() socket:10 len:24 rx:1768666583920279000
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:10 len:49
+TCPServer::defaultRecvFinishedCallback()
+Sending TCPClient-[2] CLIENT-[2] : Sending 302
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:11 len:49 utime:1768666583920348522 ktime:1768666583920092000 diff:256522
+TCPSocket::defaultRecvCallback() socket:11 len:0 rx:1768666583920092000 msg:TCPServer received msg : CLIENT-[2] : Sending 202
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:11 len:24
+TCPServer.cc:33 poll() Sat Jan 17 16:16:23 2026 EPOLLIN socket:12
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:12 len:24 utime:1768666583920397022 ktime:1768666583920370000 diff:27022
+TCPServer::defaultRecvCallback() socket:12 len:24 rx:1768666583920370000
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:12 len:49
+TCPServer::defaultRecvFinishedCallback()
+Sending TCPClient-[3] CLIENT-[3] : Sending 303
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:13 len:49 utime:1768666583920435955 ktime:1768666583920146000 diff:289955
+TCPSocket::defaultRecvCallback() socket:13 len:0 rx:1768666583920146000 msg:TCPServer received msg : CLIENT-[3] : Sending 203
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:13 len:24
+TCPServer.cc:33 poll() Sat Jan 17 16:16:23 2026 EPOLLIN socket:14
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:14 len:24 utime:1768666583920480027 ktime:1768666583920453000 diff:27027
+TCPServer::defaultRecvCallback() socket:14 len:24 rx:1768666583920453000
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:14 len:49
+TCPServer::defaultRecvFinishedCallback()
+Sending TCPClient-[4] CLIENT-[4] : Sending 304
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:15 len:49 utime:1768666583920518249 ktime:1768666583920201000 diff:317249
+TCPSocket::defaultRecvCallback() socket:15 len:0 rx:1768666583920201000 msg:TCPServer received msg : CLIENT-[4] : Sending 204
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:15 len:24
+TCPServer.cc:33 poll() Sat Jan 17 16:16:23 2026 EPOLLIN socket:16
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:16 len:24 utime:1768666583920563803 ktime:1768666583920535000 diff:28803
+TCPServer::defaultRecvCallback() socket:16 len:24 rx:1768666583920535000
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:16 len:49
+TCPServer::defaultRecvFinishedCallback()
+Sending TCPClient-[0] CLIENT-[0] : Sending 400
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:7 len:49 utime:1768666583920600502 ktime:1768666583920251000 diff:349502
+TCPSocket::defaultRecvCallback() socket:7 len:0 rx:1768666583920251000 msg:TCPServer received msg : CLIENT-[0] : Sending 300
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:7 len:24
+TCPServer.cc:33 poll() Sat Jan 17 16:16:23 2026 EPOLLIN socket:8
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:8 len:24 utime:1768666583920643051 ktime:1768666583920618000 diff:25051
+TCPServer::defaultRecvCallback() socket:8 len:24 rx:1768666583920618000
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:8 len:49
+TCPServer::defaultRecvFinishedCallback()
+Sending TCPClient-[1] CLIENT-[1] : Sending 401
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:9 len:49 utime:1768666583920683557 ktime:1768666583920317000 diff:366557
+TCPSocket::defaultRecvCallback() socket:9 len:0 rx:1768666583920317000 msg:TCPServer received msg : CLIENT-[1] : Sending 301
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:9 len:24
+TCPServer.cc:33 poll() Sat Jan 17 16:16:23 2026 EPOLLIN socket:10
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:10 len:24 utime:1768666583920742768 ktime:1768666583920700000 diff:42768
+TCPServer::defaultRecvCallback() socket:10 len:24 rx:1768666583920700000
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:10 len:49
+TCPServer::defaultRecvFinishedCallback()
+Sending TCPClient-[2] CLIENT-[2] : Sending 402
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:11 len:49 utime:1768666583920785487 ktime:1768666583920412000 diff:373487
+TCPSocket::defaultRecvCallback() socket:11 len:0 rx:1768666583920412000 msg:TCPServer received msg : CLIENT-[2] : Sending 302
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:11 len:24
+TCPServer.cc:33 poll() Sat Jan 17 16:16:23 2026 EPOLLIN socket:12
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:12 len:24 utime:1768666583920829049 ktime:1768666583920802000 diff:27049
+TCPServer::defaultRecvCallback() socket:12 len:24 rx:1768666583920802000
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:12 len:49
+TCPServer::defaultRecvFinishedCallback()
+Sending TCPClient-[3] CLIENT-[3] : Sending 403
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:13 len:49 utime:1768666583920868312 ktime:1768666583920495000 diff:373312
+TCPSocket::defaultRecvCallback() socket:13 len:0 rx:1768666583920495000 msg:TCPServer received msg : CLIENT-[3] : Sending 303
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:13 len:24
+TCPServer.cc:33 poll() Sat Jan 17 16:16:23 2026 EPOLLIN socket:14
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:14 len:24 utime:1768666583920912564 ktime:1768666583920885000 diff:27564
+TCPServer::defaultRecvCallback() socket:14 len:24 rx:1768666583920885000
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:14 len:49
+TCPServer::defaultRecvFinishedCallback()
+Sending TCPClient-[4] CLIENT-[4] : Sending 404
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:15 len:49 utime:1768666583920950355 ktime:1768666583920579000 diff:371355
+TCPSocket::defaultRecvCallback() socket:15 len:0 rx:1768666583920579000 msg:TCPServer received msg : CLIENT-[4] : Sending 304
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:15 len:24
+TCPServer.cc:33 poll() Sat Jan 17 16:16:23 2026 EPOLLIN socket:16
+TCPSocket.cc:37 sendAndRecv() Sat Jan 17 16:16:23 2026 read socket:16 len:24 utime:1768666583920996150 ktime:1768666583920967000 diff:29150
+TCPServer::defaultRecvCallback() socket:16 len:24 rx:1768666583920967000
+TCPSocket.cc:46 sendAndRecv() Sat Jan 17 16:16:23 2026 send socket:16 len:49
+TCPServer::defaultRecvFinishedCallback()

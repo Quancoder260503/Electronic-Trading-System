@@ -37,29 +37,28 @@ int main(void) {
  server.recv_finished_callback = tcpServerRecvFinishedCallback; 
  server.listen(iface, port); 
 
-//  std::vector<TCPSocket *> clients(5); 
-//  for(size_t i = 0; i < clients.size(); i++) { 
-//     clients[i] = new TCPSocket(logger); 
-//     clients[i]->recv_callback = tcpClientRecvCCallback; 
-//     logger.log("Connecting TCPClient-[%] on ip:% iface:% port:%\n", i, ip, iface, port);
-//     clients[i]->connect(ip, iface, port, false); 
-//     server.poll(); 
-//  }
+ std::vector<TCPSocket *> clients(5); 
+ for(size_t i = 0; i < clients.size(); i++) { 
+    clients[i] = new TCPSocket(logger); 
+    clients[i]->recv_callback = tcpClientRecvCCallback; 
+    logger.log("Connecting TCPClient-[%] on ip:% iface:% port:%\n", i, ip, iface, port);
+    clients[i]->connect(ip, iface, port, false); 
+    server.poll(); 
+ }
 
-//  using namespace std::literals::chrono_literals; 
+ using namespace std::literals::chrono_literals; 
 
-//  for(auto itr = 0; itr < 5; itr++) { 
-//   for(size_t i = 0; i < clients.size(); i++) { 
-//     const std::string client_msg = "CLIENT-[" + std::to_string(i) + "] : Sending " + std::to_string(itr * 100 + i);
-//     logger.log("Sending TCPClient-[%] %\n", i, client_msg);
-//     clients[i]->send(client_msg.data(), client_msg.length()); 
-//     clients[i]->sendAndRecv(); 
-//     std::this_thread::sleep_for(500ms); 
-//     server.poll(); 
-//     server.sendAndRecv(); 
-
-//   }
-//  }
+ for(auto itr = 0; itr < 5; itr++) { 
+  for(size_t i = 0; i < clients.size(); i++) { 
+    const std::string client_msg = "CLIENT-[" + std::to_string(i) + "] : Sending " + std::to_string(itr * 100 + i);
+    logger.log("Sending TCPClient-[%] %\n", i, client_msg);
+    clients[i]->send(client_msg.data(), client_msg.length()); 
+    clients[i]->sendAndRecv(); 
+   // std::this_thread::sleep_for(500ms); 
+    server.poll(); 
+    server.sendAndRecv();
+  }
+ }
 
 
  return 0; 
