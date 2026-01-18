@@ -10,11 +10,23 @@ SAN = -fsanitize=address,undefined -fno-omit-frame-pointer -g
 DEBUG_FLAGS = -DDEBUG_INVALID_REQUESTS
 endif
 CXXFLAGS = $(CXXSTD) $(OPT) $(CXXWARN) $(SAN) $(DEBUG_FLAGS)
+INCLUDES = -I. -Icommon -Iexchange
 LIB = pthread
 
-# Core TCP library components
-TCP_SRC = TCPServer.cc TCPSocket.cc
-TCP_OBJ = $(TCP_SRC:.cc=.o)
+# Directories
+COMMON_DIR = common
+EXCHANGE_DIR = exchange
+MATCHING_DIR = $(EXCHANGE_DIR)/matching
+ORDER_SERVER_DIR = $(EXCHANGE_DIR)/order_server
+MARKET_DATA_DIR = $(EXCHANGE_DIR)/market_data
+
+# Common TCP library components
+COMMON_TCP_SRC = $(COMMON_DIR)/TCPServer.cc $(COMMON_DIR)/TCPSocket.cc
+COMMON_TCP_OBJ = $(COMMON_TCP_SRC:.cc=.o)
+
+# Exchange matching engine components
+MATCHING_SRC = $(MATCHING_DIR)/Order.cc
+MATCHING_OBJ = $(MATCHING_SRC:.cc=.o)
 
 # Example programs
 EXAMPLES = SocketExample LoggingExample ThreadExample QueueExample
@@ -28,7 +40,7 @@ ALL_EXE = $(EXAMPLE_EXE)
 all: $(EXAMPLE_EXE)
 
 # Socket example target
-.dist/SocketExample: SocketExample.o TCPServer.o TCPSocket.o
+.dist/SocketExample: SocketExample.o $(COMMON_TCP_OBJ)
 	@mkdir -p .dist
 	$(CXX) $(CXXFLAGS) -o $@ $^ -l$(LIB)
 
@@ -49,26 +61,29 @@ all: $(EXAMPLE_EXE)
 
 # Generic compilation rule
 %.o: %.cc
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
 
 # Explicit dependencies
-SocketExample.o : SocketExample.cc TCPServer.hpp TCPSocket.hpp Logging.hpp
-TCPServer.o     : TCPServer.cc TCPServer.hpp TCPSocket.hpp Logging.hpp TimeUtil.hpp
-TCPSocket.o     : TCPSocket.cc TCPSocket.hpp Logging.hpp SocketUtil.hpp TimeUtil.hpp
-LoggingExample.o: LoggingExample.cc Logging.hpp
-ThreadExample.o : ThreadExample.cc ThreadUtil.hpp
-QueueExample.o  : QueueExample.cc ThreadUtil.hpp LockFreeQueue.hpp Mempool.hpp
+SocketExample.o              : SocketExample.cc $(COMMON_DIR)/TCPServer.hpp $(COMMON_DIR)/TCPSocket.hpp $(COMMON_DIR)/Logging.hpp
+$(COMMON_DIR)/TCPServer.o    : $(COMMON_DIR)/TCPServer.cc $(COMMON_DIR)/TCPServer.hpp $(COMMON_DIR)/TCPSocket.hpp $(COMMON_DIR)/Logging.hpp $(COMMON_DIR)/TimeUtil.hpp
+$(COMMON_DIR)/TCPSocket.o    : $(COMMON_DIR)/TCPSocket.cc $(COMMON_DIR)/TCPSocket.hpp $(COMMON_DIR)/Logging.hpp $(COMMON_DIR)/SocketUtil.hpp $(COMMON_DIR)/TimeUtil.hpp
+LoggingExample.o             : LoggingExample.cc $(COMMON_DIR)/Logging.hpp
+ThreadExample.o              : ThreadExample.cc $(COMMON_DIR)/ThreadUtil.hpp
+QueueExample.o               : QueueExample.cc $(COMMON_DIR)/ThreadUtil.hpp $(COMMON_DIR)/LockFreeQueue.hpp Mempool.hpp
+$(MATCHING_DIR)/Order.o      : $(MATCHING_DIR)/Order.cc $(MATCHING_DIR)/Order.hpp $(COMMON_DIR)/Logging.hpp
 
-.PHONY: format clean debug all run
+.PHONY: format clean debug all run run-socket run-logging run-thread run-queue help
 
 format:
 	clang-format -style=file -i *.cc *.hpp
+	clang-format -style=file -i $(COMMON_DIR)/*.cc $(COMMON_DIR)/*.hpp
+	clang-format -style=file -i $(EXCHANGE_DIR)/*/*.cc $(EXCHANGE_DIR)/*/*.hpp
 
 debug:
 	$(MAKE) all DEBUG=1
 
 clean:
-	rm -f *.o $(ALL_EXE)
+	rm -f *.o $(COMMON_TCP_OBJ) $(MATCHING_OBJ) $(ALL_EXE)
 	rm -rf .dist
 
 run-socket: .dist/SocketExample
@@ -82,3 +97,15 @@ run-thread: .dist/ThreadExample
 
 run-queue: .dist/QueueExample
 	./.dist/QueueExample
+
+help:
+	@echo "Available targets:"
+	@echo "  all              - Build all example programs (default)"
+	@echo "  debug            - Build with debug flags and sanitizers"
+	@echo "  run-socket       - Build and run SocketExample"
+	@echo "  run-logging      - Build and run LoggingExample"
+	@echo "  run-thread       - Build and run ThreadExample"
+	@echo "  run-queue        - Build and run QueueExample"
+	@echo "  format           - Format all source files with clang-format"
+	@echo "  clean            - Remove all build artifacts"
+	@echo "  help             - Show this help message"
