@@ -28,6 +28,12 @@ COMMON_TCP_OBJ = $(COMMON_TCP_SRC:.cc=.o)
 MATCHING_SRC = $(MATCHING_DIR)/Order.cc
 MATCHING_OBJ = $(MATCHING_SRC:.cc=.o)
 
+# Exchange order server components (header-only)
+ORDER_SERVER_HEADERS = $(ORDER_SERVER_DIR)/ClientRequest.hpp $(ORDER_SERVER_DIR)/ClientResponse.hpp
+
+# Exchange market data components (header-only)
+MARKET_DATA_HEADERS = $(MARKET_DATA_DIR)/MarketUpdate.hpp
+
 # Example programs
 EXAMPLES = SocketExample LoggingExample ThreadExample QueueExample
 EXAMPLE_OBJ = SocketExample.o LoggingExample.o ThreadExample.o QueueExample.o
@@ -70,7 +76,10 @@ $(COMMON_DIR)/TCPSocket.o    : $(COMMON_DIR)/TCPSocket.cc $(COMMON_DIR)/TCPSocke
 LoggingExample.o             : LoggingExample.cc $(COMMON_DIR)/Logging.hpp
 ThreadExample.o              : ThreadExample.cc $(COMMON_DIR)/ThreadUtil.hpp
 QueueExample.o               : QueueExample.cc $(COMMON_DIR)/ThreadUtil.hpp $(COMMON_DIR)/LockFreeQueue.hpp Mempool.hpp
-$(MATCHING_DIR)/Order.o      : $(MATCHING_DIR)/Order.cc $(MATCHING_DIR)/Order.hpp $(COMMON_DIR)/Logging.hpp
+$(MATCHING_DIR)/Order.o      : $(MATCHING_DIR)/Order.cc $(MATCHING_DIR)/Order.hpp $(COMMON_DIR)/Types.hpp $(COMMON_DIR)/Logging.hpp
+$(ORDER_SERVER_DIR)/ClientRequest.hpp : $(COMMON_DIR)/Types.hpp $(COMMON_DIR)/LockFreeQueue.hpp
+$(ORDER_SERVER_DIR)/ClientResponse.hpp : $(COMMON_DIR)/Types.hpp $(COMMON_DIR)/LockFreeQueue.hpp
+$(MARKET_DATA_DIR)/MarketUpdate.hpp : $(COMMON_DIR)/Types.hpp $(COMMON_DIR)/LockFreeQueue.hpp
 
 .PHONY: format clean debug all run run-socket run-logging run-thread run-queue help
 
