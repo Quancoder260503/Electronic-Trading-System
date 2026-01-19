@@ -15,13 +15,13 @@ struct TCPSocket {
 
   // Create TCPSocket with provided attributes to either listen-on or connect-to
   auto connect(const std::string &ip, const std::string &iface, int port,
-               bool is_listening) noexcept -> int; 
+               bool is_listening) noexcept -> int;
 
   // Called to write send data from buffers as well as check the data from the recv buffer
-  auto sendAndRecv() noexcept -> bool; 
+  auto sendAndRecv() noexcept -> bool;
 
   // Write data in the send buffer
-  auto send(const void *data, size_t len) noexcept -> void; 
+  auto send(const void *data, size_t len) noexcept -> void;
 
   TCPSocket() = delete;
 

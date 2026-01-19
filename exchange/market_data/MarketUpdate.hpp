@@ -32,9 +32,8 @@ namespace Exchange {
 
  struct MatchingEngineMarketUpdate { 
    MarketUpdateType type = MarketUpdateType::INVALID; 
-   ClientID client_id = CLIENT_ID_INVALID;
+   OrderID  order_id  = ORDER_ID_INVALID;  
    TickerID ticker_id = TICKER_ID_INVALID; 
-   OrderID  order_id  = ORDER_ID_INVALID; 
    Side     side      = Side::INVALID;  
    Price    price     = PRICE_INVALID;
    Quantity quantity  = QUANTITY_INVALID; 

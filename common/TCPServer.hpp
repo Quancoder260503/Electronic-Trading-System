@@ -16,8 +16,8 @@ struct TCPServer {
   auto sendAndRecv() noexcept -> void;
 
  private:
-  // Add socket to container 
-  auto addToEpollList(TCPSocket *socket) noexcept -> bool ;
+  // Add socket to container
+  auto addToEpollList(TCPSocket *socket) noexcept -> bool;
 
  public:
   int epoll_fd = -1;

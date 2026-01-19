@@ -2,7 +2,7 @@
 
 namespace Common {
 // Start listening for connections on the provided interface and port
-auto TCPServer::listen(const std::string &iface, int port) ->  void {
+auto TCPServer::listen(const std::string &iface, int port) -> void {
   epoll_fd = epoll_create(1);
   ASSERT(epoll_fd >= 0, "epoll_create() failed error : " + std::string(std::strerror(errno)));
 
@@ -92,10 +92,9 @@ auto TCPServer::sendAndRecv() noexcept -> void {
                 [](auto socket) { socket->sendAndRecv(); });
 }
 
-
 auto TCPServer::addToEpollList(TCPSocket *socket) noexcept -> bool {
   epoll_event event{EPOLLET | EPOLLIN, {reinterpret_cast<void *>(socket)}};
   return epoll_ctl(epoll_fd, EPOLL_CTL_ADD, socket->socket_fd, &event);
 }
 
-} // namespace Common
+}  // namespace Common
