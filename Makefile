@@ -39,11 +39,16 @@ EXAMPLES = SocketExample LoggingExample ThreadExample QueueExample
 EXAMPLE_OBJ = SocketExample.o LoggingExample.o ThreadExample.o QueueExample.o
 EXAMPLE_EXE = $(addprefix .dist/, $(EXAMPLES))
 
-ALL_EXE = $(EXAMPLE_EXE)
+# Exchange main program
+EXCHANGE_MAIN = exchange_main
+EXCHANGE_MAIN_SRC = $(EXCHANGE_DIR)/$(EXCHANGE_MAIN).cc
+EXCHANGE_MAIN_EXE = .dist/$(EXCHANGE_MAIN)
+
+ALL_EXE = $(EXAMPLE_EXE) $(EXCHANGE_MAIN_EXE)
 
 .DEFAULT_GOAL := all
 
-all: $(EXAMPLE_EXE)
+all: $(EXAMPLE_EXE) $(EXCHANGE_MAIN_EXE)
 
 # Socket example target
 .dist/SocketExample: SocketExample.o $(COMMON_TCP_OBJ)
@@ -65,6 +70,11 @@ all: $(EXAMPLE_EXE)
 	@mkdir -p .dist
 	$(CXX) $(CXXFLAGS) -o $@ $^ -l$(LIB)
 
+# Exchange main target
+$(EXCHANGE_MAIN_EXE): $(EXCHANGE_MAIN_SRC:.cc=.o) $(COMMON_TCP_OBJ) $(MATCHING_OBJ)
+	@mkdir -p .dist
+	$(CXX) $(CXXFLAGS) -o $@ $^ -l$(LIB)
+
 # Generic compilation rule
 %.o: %.cc
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
@@ -80,8 +90,9 @@ $(MATCHING_DIR)/Order.o      : $(MATCHING_DIR)/Order.cc $(MATCHING_DIR)/Order.hp
 $(ORDER_SERVER_DIR)/ClientRequest.hpp : $(COMMON_DIR)/Types.hpp $(COMMON_DIR)/LockFreeQueue.hpp
 $(ORDER_SERVER_DIR)/ClientResponse.hpp : $(COMMON_DIR)/Types.hpp $(COMMON_DIR)/LockFreeQueue.hpp
 $(MARKET_DATA_DIR)/MarketUpdate.hpp : $(COMMON_DIR)/Types.hpp $(COMMON_DIR)/LockFreeQueue.hpp
+$(EXCHANGE_DIR)/$(EXCHANGE_MAIN).o : $(EXCHANGE_MAIN_SRC) $(MATCHING_DIR)/MatchingEngine.hpp $(MATCHING_DIR)/OrderBook.hpp $(COMMON_DIR)/TCPServer.hpp
 
-.PHONY: format clean debug all run run-socket run-logging run-thread run-queue help
+.PHONY: format clean debug all run run-socket run-logging run-thread run-queue run-exchange help
 
 format:
 	clang-format -style=file -i *.cc *.hpp
@@ -107,14 +118,18 @@ run-thread: .dist/ThreadExample
 run-queue: .dist/QueueExample
 	./.dist/QueueExample
 
+run-exchange: $(EXCHANGE_MAIN_EXE)
+	./$(EXCHANGE_MAIN_EXE)
+
 help:
 	@echo "Available targets:"
-	@echo "  all              - Build all example programs (default)"
+	@echo "  all              - Build all example programs and exchange_main (default)"
 	@echo "  debug            - Build with debug flags and sanitizers"
 	@echo "  run-socket       - Build and run SocketExample"
 	@echo "  run-logging      - Build and run LoggingExample"
 	@echo "  run-thread       - Build and run ThreadExample"
 	@echo "  run-queue        - Build and run QueueExample"
+	@echo "  run-exchange     - Build and run exchange_main"
 	@echo "  format           - Format all source files with clang-format"
 	@echo "  clean            - Remove all build artifacts"
 	@echo "  help             - Show this help message"

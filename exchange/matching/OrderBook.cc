@@ -169,4 +169,75 @@ auto MatchingEngineOrderBook::cancel(ClientID client_id, OrderID order_id,
   matching_engine->sendClientResponse(&client_response);
 }
 
+auto MatchingEngineOrderBook::toString(bool detailed, bool validity_check) const -> std::string { 
+  std::stringstream ss; 
+  std::string time_str; 
+  auto printer = [&](std::stringstream &ss, MatchingEngineOrderAtPrice *itr, Side side, Price &last_price, bool sanity_check) { 
+   char buffer[1 << 12]; 
+   Quantity quantity = 0; 
+   size_t num_orders = 0; 
+   for(auto o_itr = itr->first_order; ; o_itr = o_itr->next_order) { 
+    quantity += o_itr->quantity; 
+    ++num_orders; 
+    if(o_itr->next_order == itr->first_order) { 
+      break; 
+    }
+   }
+   sprintf(buffer, " <px:%3s p:%3s n:%3s> %-3s @ %-5s(%-4s)",
+        priceToString(itr->price).c_str(), 
+        priceToString(itr->prev_entry->price).c_str(), 
+        priceToString(itr->next_entry->price).c_str(),
+        priceToString(itr->price).c_str(), 
+        quantityToString(quantity).c_str(), 
+        std::to_string(num_orders).c_str()
+   );
+   ss << buffer;
+   for(auto o_itr = itr->first_order; ; o_itr = o_itr->next_order) { 
+    if (detailed) {
+      sprintf(buffer, "[oid:%s q:%s p:%s n:%s] ",
+              orderIdToString(o_itr->market_order_id).c_str(), 
+              quantityToString(o_itr->quantity).c_str(),
+              orderIdToString(o_itr->prev_order ? o_itr->prev_order->market_order_id : OrderId_INVALID).c_str(),
+              orderIdToString(o_itr->next_order ? o_itr->next_order->market_order_id : OrderId_INVALID).c_str());
+      ss << buffer;
+    }
+    if (o_itr->next_order == itr->first_order) { 
+      break;
+    }
+   }
+   ss << std::endl; 
+  
+   if(sanity_check) { 
+    if((side == Side::SELL && last_price >= itr->price) || (side == Side::BUY && last_price <= itr->price)) { 
+     FATAL("Bids/Asks not sorted by descending/ascending prices last : " + priceToString(last_price) + "itr : " + itr->toString());  
+    }
+    last_price = itr->price;
+   }
+  };
+  ss << "Ticker : " << tickerIdToString(ticker_id) << std::endl; 
+  
+  { 
+    auto ask_itr = asks_by_price; 
+    auto last_ask_price = std::numeric_limits<Price>::min(); 
+    for(size_t count = 0; ask_itr; count++) { 
+     ss << "ASKS L : " << count << " => "; 
+     auto next_ask_itr = (ask_itr->next_entry == asks_by_price ? nullptr : ask_itr->next_entry); 
+     printer(ss, ask_itr, Side::SELL, last_ask_price, validity_check);
+     ask_itr = next_ask_itr;  
+    }
+    ss << std::endl << "                          X" << std::endl << std::endl;
+  } 
+  
+  {
+    auto bid_itr = bids_by_price; 
+    auto last_bid_price = std::numeric_limits<Price>::min(); 
+    for(size_t count = 0; ask_itr; count++) { 
+     ss << "BIDS L : " << count << " => "; 
+     auto next_bid_itr = (bid_itr->next_entry == bids_by_price ? nullptr : bid_itr->next_entry); 
+     printer(ss, bid_itr, Side::BUY, last_bid_price, validity_check);
+     bid_itr = next_bid_itr;  
+    }
+  }
+  return ss.str(); 
+}
 }  // namespace Exchange

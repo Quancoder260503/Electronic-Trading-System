@@ -30,7 +30,7 @@ constexpr size_t MATCHING_ENGINE_MAX_ORDER_IDS =
     1024 * 1024;  // maxmimum number of processed orders possible for a single
                   // trading arguments
 constexpr size_t MATCHING_ENGINE_MAX_PRICE_LEVELs =
-    256;  // represent the maxmimum depth of price levels forr limit order book
+    256;  // represent the maxmimum depth of price levels for limit order book
           // that the matching engine maintains
 
 constexpr auto ORDER_ID_INVALID = std::numeric_limits<OrderID>::max();

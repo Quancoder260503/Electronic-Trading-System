@@ -6,9 +6,9 @@
 
 namespace Exchange {
 struct MatchingEngineOrder {
-  TickerID ticker_id = TICKER_ID_INVALID;
-  ClientID client_id = CLIENT_ID_INVALID;
-  OrderID client_order_id = ORDER_ID_INVALID;
+  TickerID ticker_id = TICKER_ID_INVALID; // stock ticker 
+  ClientID client_id = CLIENT_ID_INVALID; 
+  OrderID client_order_id = ORDER_ID_INVALID; 
   OrderID market_order_id = ORDER_ID_INVALID;
   Side side = Side::INVALID;
   Price price = PRICE_INVALID;
@@ -19,6 +19,7 @@ struct MatchingEngineOrder {
   MatchingEngineOrder* next_order = nullptr;
 
   MatchingEngineOrder() = default;
+
   MatchingEngineOrder(TickerID ticker_id_, ClientID client_id_,
                       OrderID client_order_id_, OrderID market_order_id_,
                       Side side_, Price price_, Quantity quantity_,
@@ -42,7 +43,7 @@ struct MatchingEngineOrderAtPrice {
   Side side = Side::INVALID;
   Price price = PRICE_INVALID;
 
-  MatchingEngineOrder* first_order = nullptr;
+  MatchingEngineOrder* first_order = nullptr; 
   MatchingEngineOrderAtPrice* prev_entry = nullptr;
   MatchingEngineOrderAtPrice* next_entry = nullptr;
 
@@ -61,11 +62,11 @@ struct MatchingEngineOrderAtPrice {
     ss << "MatchingEngineOrdersAtPrice[" << "side:" << sideToString(side) << " "
        << "price:" << priceToString(price) << " "
        << "first_me_order:"
-       << (first_me_order ? first_me_order->toString() : "null") << " "
+       << (first_order ? first_order->toString() : "null") << " "
        << "prev:"
        << priceToString(prev_entry ? prev_entry->price : Price_INVALID) << " "
        << "next:"
-       << priceToString(next_entry ? next_entry->price_ : Price_INVALID) << "]";
+       << priceToString(next_entry ? next_entry->price : Price_INVALID) << "]";
     return ss.str();
   }
 };

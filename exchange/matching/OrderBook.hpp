@@ -20,8 +20,7 @@ class MatchingEngineOrderBook final {
   auto add(ClientID client_id, OrderID client_order_id, TickerID ticker_id,
            Side side, Price price, Quantity quantity) noexcept -> void;
 
-  auto cancel(ClientID client_id, OrderID order_id, TickerID ticker_id) noexcept
-      -> void;
+  auto cancel(ClientID client_id, OrderID order_id, TickerID ticker_id) noexcept -> void;
 
   auto toString(bool detailed, bool validity_check) const -> std::string;
 
@@ -33,6 +32,7 @@ class MatchingEngineOrderBook final {
   MatchingEngineOrderBook& operator=(const MatchingEngineOrderBook&&) = delete;
 
 private:
+
   TickerID ticker_id = TICKER_ID_INVALID;
 
   MatchingEngine* matching_engine = nullptr;
@@ -62,7 +62,7 @@ private:
   }
 
   auto priceToIndex(Price price) const noexcept {
-    return price % MATCHING_ENGINE_MAX_PRICE_LEVELs;
+    return price % MATCHING_ENGINE_MAX_PRICE_LEVELs; 
   }
 
   auto getOrdersAtPrice(Price price) const noexcept
@@ -122,7 +122,7 @@ private:
   }
 
   auto addOrderAtPrice(
-      MatchingEngineOrderAtPrice* new_orders_at_price) noexcept {
+    MatchingEngineOrderAtPrice* new_orders_at_price) noexcept {
     price_orders_at_price.at(priceToIndex(new_orders_at_price->price)) =
         new_orders_at_price;
 
