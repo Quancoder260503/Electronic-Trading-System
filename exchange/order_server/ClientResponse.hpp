@@ -58,6 +58,6 @@ struct MatchingEngineClientResponse {
     return ss.str();
   }
 };
-#pragma(pop)
+#pragma pack(pop)
 typedef LockFreeQueue<MatchingEngineClientResponse> ClientResponseLFQueue;
 }  // namespace Exchange

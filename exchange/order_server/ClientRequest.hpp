@@ -46,6 +46,6 @@ struct MatchingEngineClientRequest {
     return ss.str();
   }
 };
-#pragma(pop)
+#pragma pack(pop)
 typedef LockFreeQueue<MatchingEngineClientRequest> ClientRequestLFQueue;
 }  // namespace Exchange

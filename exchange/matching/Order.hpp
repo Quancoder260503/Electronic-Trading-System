@@ -60,6 +60,8 @@ struct MatchingEngineOrderAtPrice {
         prev_entry(prev_entry_),
         next_entry(next_entry_) {}
 
+  MatchingEngineOrderAtPrice() = default; 
+  
   auto toString() const {
     std::stringstream ss;
     ss << "MatchingEngineOrdersAtPrice[" << "side:" << sideToString(side) << " "

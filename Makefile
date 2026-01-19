@@ -25,7 +25,7 @@ COMMON_TCP_SRC = $(COMMON_DIR)/TCPServer.cc $(COMMON_DIR)/TCPSocket.cc
 COMMON_TCP_OBJ = $(COMMON_TCP_SRC:.cc=.o)
 
 # Exchange matching engine components
-MATCHING_SRC = $(MATCHING_DIR)/Order.cc
+MATCHING_SRC = $(MATCHING_DIR)/Order.cc $(MATCHING_DIR)/MatchingEngine.cc $(MATCHING_DIR)/OrderBook.cc
 MATCHING_OBJ = $(MATCHING_SRC:.cc=.o)
 
 # Exchange order server components (header-only)
@@ -87,6 +87,8 @@ LoggingExample.o             : LoggingExample.cc $(COMMON_DIR)/Logging.hpp
 ThreadExample.o              : ThreadExample.cc $(COMMON_DIR)/ThreadUtil.hpp
 QueueExample.o               : QueueExample.cc $(COMMON_DIR)/ThreadUtil.hpp $(COMMON_DIR)/LockFreeQueue.hpp Mempool.hpp
 $(MATCHING_DIR)/Order.o      : $(MATCHING_DIR)/Order.cc $(MATCHING_DIR)/Order.hpp $(COMMON_DIR)/Types.hpp $(COMMON_DIR)/Logging.hpp
+$(MATCHING_DIR)/OrderBook.o  : $(MATCHING_DIR)/OrderBook.cc $(MATCHING_DIR)/OrderBook.hpp $(MATCHING_DIR)/Order.hpp $(COMMON_DIR)/Types.hpp $(COMMON_DIR)/Logging.hpp
+$(MATCHING_DIR)/MatchingEngine.o : $(MATCHING_DIR)/MatchingEngine.cc $(MATCHING_DIR)/MatchingEngine.hpp $(MATCHING_DIR)/OrderBook.hpp $(MATCHING_DIR)/Order.hpp $(COMMON_DIR)/Types.hpp $(COMMON_DIR)/Logging.hpp
 $(ORDER_SERVER_DIR)/ClientRequest.hpp : $(COMMON_DIR)/Types.hpp $(COMMON_DIR)/LockFreeQueue.hpp
 $(ORDER_SERVER_DIR)/ClientResponse.hpp : $(COMMON_DIR)/Types.hpp $(COMMON_DIR)/LockFreeQueue.hpp
 $(MARKET_DATA_DIR)/MarketUpdate.hpp : $(COMMON_DIR)/Types.hpp $(COMMON_DIR)/LockFreeQueue.hpp

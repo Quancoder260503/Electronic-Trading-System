@@ -12,12 +12,10 @@ auto MatchingEngineOrder::toString() const -> std::string {
      << " " << "qty:" << quantityToString(quantity) << " "
      << "prio:" << priorityToString(priority) << " "
      << "prev:"
-     << orderIdToString(prev_order ? prev_order_->market_order_id
-                                   : OrderId_INVALID)
+     << orderIdToString(prev_order ? prev_order->market_order_id : ORDER_ID_INVALID)
      << " "
      << "next:"
-     << orderIdToString(next_order_ ? next_order_->market_order_id
-                                    : OrderId_INVALID)
+     << orderIdToString(next_order ? next_order->market_order_id : ORDER_ID_INVALID)
      << "]";
   return ss.str();
 }

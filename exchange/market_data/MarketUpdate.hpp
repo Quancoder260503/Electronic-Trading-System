@@ -54,6 +54,8 @@ struct MatchingEngineMarketUpdate {
     return ss.str();
   }
 };
-#pragma(pop)
+
+#pragma pack(pop)
+
 typedef LockFreeQueue<MatchingEngineMarketUpdate> MarketUpdateLFQueue;
 }  // namespace Exchange

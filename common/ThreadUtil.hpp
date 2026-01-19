@@ -5,6 +5,7 @@
 #include <iostream>
 #include <thread>
 
+namespace Common { 
 inline auto setThreadCore(int core_id) {
   cpu_set_t cpuset;
   CPU_ZERO(&cpuset);          // Clear the cpu_set_t variable
@@ -41,4 +42,5 @@ inline auto createAndStartThread(int core_id, const std::string& name, T&& func,
     t = nullptr;
   }
   return t;
+}
 }

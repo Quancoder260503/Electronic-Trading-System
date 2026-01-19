@@ -24,18 +24,22 @@ public:
   MatchingEngine& operator=(const MatchingEngine&&) = delete;
 
   auto processClientRequest(
-      const MatchingEngineClientRequest* client_request) noexcept -> void {
-    auto order_book = ticker_order_book[client_request->ticker_id];
+    const MatchingEngineClientRequest* client_request) noexcept -> void {
+    auto order_book = ticker_order_book.at(client_request->ticker_id);
     switch (client_request->type) {
     case ClientRequestType::NEW : {
-      order_book->add(client_request->client_id, client_request->ticker_id,
-                      client_request->side, client_request->price,
+      order_book->add(client_request->client_id,
+                      client_request->order_id, 
+                      client_request->ticker_id,
+                      client_request->side, 
+                      client_request->price,
                       client_request->quantity);
     } break;
 
     case ClientRequestType::CANCEL :  {
       order_book->cancel(client_request->client_id, 
-                         client_request->order_id, client_request->ticker_id);
+                         client_request->order_id, 
+                        client_request->ticker_id);
     } break;
 
     default: {
@@ -68,7 +72,7 @@ public:
   auto run() noexcept -> void {
     logger.log("%:% %() %\n", __FILE__, __LINE__, __FUNCTION__,
                Common::getCurrentTimeStr(&time_str));
-    while (run) {
+    while (is_running) {
       const auto client_request = incoming_requests->getNextToRead();
       if (LIKELY(client_request)) {
         logger.log("%:% %() % Processing %\n", __FILE__, __LINE__, __FUNCTION__,
@@ -80,12 +84,12 @@ public:
     }
   }
 private:
-  MatchingEngineOrderBook ticker_order_book;
+  OrderBookHashMap ticker_order_book;
   ClientRequestLFQueue* incoming_requests = nullptr;
   ClientResponseLFQueue* outgoing_responses = nullptr;
   MarketUpdateLFQueue* outgoing_market_updates = nullptr;
 
-  volatile bool run = false;  // accessed by different threads
+  volatile bool is_running = false;  // accessed by different threads
   std::string time_str;
   Logger logger;
 }; 

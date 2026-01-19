@@ -12,6 +12,7 @@ using namespace Common;
 namespace Exchange {
 class MatchingEngine;
 class MatchingEngineOrderBook final {
+public:
   explicit MatchingEngineOrderBook(TickerID ticket_id_, Logger* logger_,
                                    MatchingEngine* matching_engine_);
 
@@ -34,6 +35,8 @@ class MatchingEngineOrderBook final {
 private:
 
   TickerID ticker_id = TICKER_ID_INVALID;
+  
+  Logger* logger = nullptr;
 
   MatchingEngine* matching_engine = nullptr;
 
@@ -54,7 +57,6 @@ private:
   OrderID next_market_order_id = 1;
 
   std::string time_str;
-  Logger* logger = nullptr;
 
 private:
   auto generateNewMarketOrderId() noexcept -> OrderID {
@@ -76,13 +78,13 @@ private:
     return orders_at_price->first_order->prev_order->priority + 1;
   }
 
-  auto match(TickerID ticker_id, ClientID client_id, Side side,
+  auto match(TickerID ticker_id_, ClientID client_id, Side side,
              OrderID client_order_id, OrderID new_market_order_id,
              MatchingEngineOrder* itr, Quantity* leaves_quantity) noexcept;
 
-  auto checkForMatch(OrderID client_id, OrderID client_order_id,
-                     TickerID ticker_id, Side side, Price price,
-                     Quantity quantity, Quantity new_market_order_id) noexcept;
+  auto checkForMatch(ClientID client_id, OrderID client_order_id,
+                     TickerID ticker_id_, Side side, Price price,
+                     Quantity quantity, OrderID new_market_order_id) noexcept -> Quantity;
 
   auto removeOrderAtPrice(Side side, Price price) noexcept {
     const auto best_orders_by_price =
