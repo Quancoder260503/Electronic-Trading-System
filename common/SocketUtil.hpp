@@ -30,23 +30,26 @@ struct SocketConfig {
 
   auto toString() const {
     std::stringstream ss;
-    ss << "SocketCfg[ip:" << ip << " iface:" << iface << " port:" << port << " is_udp:" << is_udp
-       << " is_listening:" << is_listening << " needs_SO_timestamp:" << needs_so_timestamp << "]";
+    ss << "SocketCfg[ip:" << ip << " iface:" << iface << " port:" << port
+       << " is_udp:" << is_udp << " is_listening:" << is_listening
+       << " needs_SO_timestamp:" << needs_so_timestamp << "]";
     return ss.str();
   }
 };
 
 constexpr int MaxTCPServerBackLog = 1024;
 
-inline auto getIfaceIP(const std::string &iface) -> std::string {
+inline auto getIfaceIP(const std::string& iface) -> std::string {
   char buffer[NI_MAXHOST] = {'\0'};
-  ifaddrs *ifaddr = nullptr;
+  ifaddrs* ifaddr = nullptr;
   if (getifaddrs(&ifaddr) != -1) {
-    for (ifaddrs *ifa = ifaddr; ifa; ifa = ifa->ifa_next) {
-      // std::cerr << "address : " << ifa->ifa_name << " " << ifa->ifa_addr->sa_family << '\n';
-      if (ifa->ifa_addr && ifa->ifa_addr->sa_family == AF_INET && iface == ifa->ifa_name) {
-        getnameinfo(ifa->ifa_addr, sizeof(sockaddr_in), buffer, sizeof(buffer), NULL, 0,
-                    NI_NUMERICHOST);
+    for (ifaddrs* ifa = ifaddr; ifa; ifa = ifa->ifa_next) {
+      // std::cerr << "address : " << ifa->ifa_name << " " <<
+      // ifa->ifa_addr->sa_family << '\n';
+      if (ifa->ifa_addr && ifa->ifa_addr->sa_family == AF_INET &&
+          iface == ifa->ifa_name) {
+        getnameinfo(ifa->ifa_addr, sizeof(sockaddr_in), buffer, sizeof(buffer),
+                    NULL, 0, NI_NUMERICHOST);
         break;
       }
     }
@@ -56,58 +59,71 @@ inline auto getIfaceIP(const std::string &iface) -> std::string {
 }
 
 inline auto setNonBlockingFD(int fd) -> bool {
-  const auto flags = fcntl(fd, F_GETFL, 0);               // Check if socket is already non-blocking
-  if (flags == -1) return false;                          // Error
-  if (flags & O_NONBLOCK) return true;                    // Already set
-  return (fcntl(fd, F_SETFL, flags | O_NONBLOCK) != -1);  // Change the socket into non-block mode
+  const auto flags =
+      fcntl(fd, F_GETFL, 0);      // Check if socket is already non-blocking
+  if (flags == -1) return false;  // Error
+  if (flags & O_NONBLOCK) return true;  // Already set
+  return (fcntl(fd, F_SETFL, flags | O_NONBLOCK) !=
+          -1);  // Change the socket into non-block mode
 }
 
 inline auto setNoDelay(int fd) -> bool {
   int one = 1;
-  return (setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, reinterpret_cast<void *>(&one), sizeof(one)) !=
-          -1);
+  return (setsockopt(fd, IPPROTO_TCP, TCP_NODELAY,
+                     reinterpret_cast<void*>(&one), sizeof(one)) != -1);
 }
 
 inline auto setSOTimestamp(int fd) -> bool {
   int one = 1;
-  return (setsockopt(fd, SOL_SOCKET, SO_TIMESTAMP, reinterpret_cast<void *>(&one), sizeof(one)) !=
-          -1);
+  return (setsockopt(fd, SOL_SOCKET, SO_TIMESTAMP,
+                     reinterpret_cast<void*>(&one), sizeof(one)) != -1);
 }
 
-inline auto wouldBlock() -> bool { return (errno == EWOULDBLOCK || errno == EINPROGRESS); }
+inline auto wouldBlock() -> bool {
+  return (errno == EWOULDBLOCK || errno == EINPROGRESS);
+}
 
 inline auto setMcastTTL(int fd, int mcast_ttl) -> bool {
-  return (setsockopt(fd, IPPROTO_IP, IP_MULTICAST_TTL, reinterpret_cast<void *>(&mcast_ttl),
+  return (setsockopt(fd, IPPROTO_IP, IP_MULTICAST_TTL,
+                     reinterpret_cast<void*>(&mcast_ttl),
                      sizeof(mcast_ttl)) != -1);
 }
 
 inline auto setTTL(int fd, int ttl) -> bool {
-  return (setsockopt(fd, IPPROTO_TCP, IP_TTL, reinterpret_cast<void *>(&ttl), sizeof(ttl)) != -1);
+  return (setsockopt(fd, IPPROTO_TCP, IP_TTL, reinterpret_cast<void*>(&ttl),
+                     sizeof(ttl)) != -1);
 }
 
 // add membership / subscription to the multicast stream specified
-inline auto join(int fd, const std::string &ip, const std::string &iface, int port) -> bool {
+inline auto join(int fd, const std::string& ip, const std::string& iface,
+                 int port) -> bool {
   const ip_mreq mreq{{inet_addr(ip.c_str())}, {htonl(INADDR_ANY)}};
-  return (setsockopt(fd, IPPROTO_IP, IP_ADD_MEMBERSHIP, &mreq, sizeof(mreq)) != -1);
+  return (setsockopt(fd, IPPROTO_IP, IP_ADD_MEMBERSHIP, &mreq, sizeof(mreq)) !=
+          -1);
 }
 
 // Create listening TCP/UDP socket
-[[nodiscard]] inline auto createSocket(Logger &logger, const SocketConfig &socket_cfg) -> int {
+[[nodiscard]] inline auto createSocket(Logger& logger,
+                                       const SocketConfig& socket_cfg) -> int {
   std::string time_str;
-  const auto ip = socket_cfg.ip.empty() ? getIfaceIP(socket_cfg.iface) : socket_cfg.ip;
+  const auto ip =
+      socket_cfg.ip.empty() ? getIfaceIP(socket_cfg.iface) : socket_cfg.ip;
   logger.log("%:% %() % cfg:%\n", __FILE__, __LINE__, __FUNCTION__,
              Common::getCurrentTimeStr(&time_str), socket_cfg.toString());
-  const int flags = (socket_cfg.is_listening ? AI_PASSIVE : 0) | AI_NUMERICHOST | AI_NUMERICSERV;
+  const int flags = (socket_cfg.is_listening ? AI_PASSIVE : 0) |
+                    AI_NUMERICHOST | AI_NUMERICSERV;
   addrinfo hints{};
   hints.ai_flags = flags;
   hints.ai_family = AF_INET;
   hints.ai_socktype = socket_cfg.is_udp ? SOCK_DGRAM : SOCK_STREAM;
   hints.ai_protocol = socket_cfg.is_udp ? IPPROTO_UDP : IPPROTO_TCP;
-  addrinfo *res = nullptr;
-  const int rc = getaddrinfo(ip.c_str(), std::to_string(socket_cfg.port).c_str(), &hints, &res);
-  ASSERT(rc == EXIT_SUCCESS, "getaddrinfo() failed: " + std::string(gai_strerror(rc)));
+  addrinfo* res = nullptr;
+  const int rc = getaddrinfo(
+      ip.c_str(), std::to_string(socket_cfg.port).c_str(), &hints, &res);
+  ASSERT(rc == EXIT_SUCCESS,
+         "getaddrinfo() failed: " + std::string(gai_strerror(rc)));
   int one = 1;
-  for (addrinfo *rp = res; rp; rp = rp->ai_next) {
+  for (addrinfo* rp = res; rp; rp = rp->ai_next) {
     int fd = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
     if (fd == -1) {
       logger.log("socket() failed: %\n", strerror(errno));
@@ -124,7 +140,8 @@ inline auto join(int fd, const std::string &ip, const std::string &iface, int po
       continue;
     }
     if (!socket_cfg.is_listening) {
-      if (connect(fd, rp->ai_addr, rp->ai_addrlen) == -1 && errno != EINPROGRESS) {
+      if (connect(fd, rp->ai_addr, rp->ai_addrlen) == -1 &&
+          errno != EINPROGRESS) {
         logger.log("connect() failed: %\n", strerror(errno));
         close(fd);
         continue;

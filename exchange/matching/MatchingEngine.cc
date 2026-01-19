@@ -1,9 +1,9 @@
 #include "MatchingEngine.hpp"
 
 namespace Exchange {
-MatchingEngine::MatchingEngine(ClientRequestLFQueue *client_request,
-                               ClientResponseLFQueue *client_response,
-                               MarketUpdateLFQueue *market_updates)
+MatchingEngine::MatchingEngine(ClientRequestLFQueue* client_request,
+                               ClientResponseLFQueue* client_response,
+                               MarketUpdateLFQueue* market_updates)
     : incoming_requests(client_request),
       outgoing_responses(client_response),
       outgoing_market_updates(market_updates),
@@ -19,7 +19,7 @@ MatchingEngine::~MatchingEngine() {
   incoming_requests = nullptr;
   outgoing_market_updates = nullptr;
   outgoing_market_updates = nullptr;
-  for (auto &order_book : ticker_order_book) {
+  for (auto& order_book : ticker_order_book) {
     delete order_book;
     order_book = nullptr;
   }

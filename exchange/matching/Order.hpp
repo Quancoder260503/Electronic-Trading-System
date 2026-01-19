@@ -15,14 +15,15 @@ struct MatchingEngineOrder {
   Quantity quantity = QUANTITY_INVALID;
   Priority priority = PRIORITY_INVALID;
 
-  MatchingEngineOrder *prev_order = nullptr;
-  MatchingEngineOrder *next_order = nullptr;
+  MatchingEngineOrder* prev_order = nullptr;
+  MatchingEngineOrder* next_order = nullptr;
 
   MatchingEngineOrder() = default;
-  MatchingEngineOrder(TickerID ticker_id_, ClientID client_id_, OrderID client_order_id_,
-                      OrderID market_order_id_, Side side_, Price price_, Quantity quantity_,
-                      Priority priority_ MatchingEnginerOrder *prev_order_,
-                      MatchingEngineOrder *next_order_) noexcept
+  MatchingEngineOrder(TickerID ticker_id_, ClientID client_id_,
+                      OrderID client_order_id_, OrderID market_order_id_,
+                      Side side_, Price price_, Quantity quantity_,
+                      Priority priority_ MatchingEnginerOrder* prev_order_,
+                      MatchingEngineOrder* next_order_) noexcept
       : ticket_id(ticket_id_),
         client_id(client_id_),
         client_order_id(client_order_id_),
@@ -41,13 +42,14 @@ struct MatchingEngineOrderAtPrice {
   Side side = Side::INVALID;
   Price price = PRICE_INVALID;
 
-  MatchingEngineOrder *first_order = nullptr;
-  MatchingEngineOrderAtPrice *prev_entry = nullptr;
-  MatchingEngineOrderAtPrice *next_entry = nullptr;
+  MatchingEngineOrder* first_order = nullptr;
+  MatchingEngineOrderAtPrice* prev_entry = nullptr;
+  MatchingEngineOrderAtPrice* next_entry = nullptr;
 
-  MatchingEngineOrderAtPrice(Side side_, Price price_, MatchingEngineOrder *first_order_,
-                             MatchingEngineOrderAtPrice *prev_entry_,
-                             MatchingEngineOrderAtPrice *next_entry_)
+  MatchingEngineOrderAtPrice(Side side_, Price price_,
+                             MatchingEngineOrder* first_order_,
+                             MatchingEngineOrderAtPrice* prev_entry_,
+                             MatchingEngineOrderAtPrice* next_entry_)
       : side(side_),
         price(price_),
         first_order(first_order_),
@@ -58,15 +60,21 @@ struct MatchingEngineOrderAtPrice {
     std::stringstream ss;
     ss << "MatchingEngineOrdersAtPrice[" << "side:" << sideToString(side) << " "
        << "price:" << priceToString(price) << " "
-       << "first_me_order:" << (first_me_order ? first_me_order->toString() : "null") << " "
-       << "prev:" << priceToString(prev_entry ? prev_entry->price : Price_INVALID) << " "
-       << "next:" << priceToString(next_entry ? next_entry->price_ : Price_INVALID) << "]";
+       << "first_me_order:"
+       << (first_me_order ? first_me_order->toString() : "null") << " "
+       << "prev:"
+       << priceToString(prev_entry ? prev_entry->price : Price_INVALID) << " "
+       << "next:"
+       << priceToString(next_entry ? next_entry->price_ : Price_INVALID) << "]";
     return ss.str();
   }
 };
 
-typedef std::array<MatchingEngineOrder *, MATCHING_ENGINE_MAX_ORDER_IDS> OrderHashMap;
-typedef std::array<OrderHashMap, MATCHING_ENGINE_MAX_NUM_CLIENTS> ClientOrderHashMap;
-typedef std::array<MatchingEngineOrderAtPrice *, MATCHING_ENGINE_MAX_PRICE_LEVELS>
+typedef std::array<MatchingEngineOrder*, MATCHING_ENGINE_MAX_ORDER_IDS>
+    OrderHashMap;
+typedef std::array<OrderHashMap, MATCHING_ENGINE_MAX_NUM_CLIENTS>
+    ClientOrderHashMap;
+typedef std::array<MatchingEngineOrderAtPrice*,
+                   MATCHING_ENGINE_MAX_PRICE_LEVELS>
     OrdersAtPriceHashMap;
 }  // namespace Exchange

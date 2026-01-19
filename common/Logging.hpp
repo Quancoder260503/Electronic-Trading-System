@@ -36,38 +36,39 @@ struct LogElement {
   } u_;
 };
 class Logger final {
- public:
+public:
   auto flushQueue() noexcept {
     while (running) {
-      for (auto next = queue.getNextToRead(); queue.size() && next; next = queue.getNextToRead()) {
+      for (auto next = queue.getNextToRead(); queue.size() && next;
+           next = queue.getNextToRead()) {
         switch (next->type) {
-          case LogType::CHAR:
-            file << next->u_.c;
-            break;
-          case LogType::INTEGER:
-            file << next->u_.i;
-            break;
-          case LogType::LONG_INTEGER:
-            file << next->u_.l;
-            break;
-          case LogType::LONG_LONG_INTEGER:
-            file << next->u_.ll;
-            break;
-          case LogType::UNSIGNED_INTEGER:
-            file << next->u_.u;
-            break;
-          case LogType::UNSIGNED_LONG_INTEGER:
-            file << next->u_.ul;
-            break;
-          case LogType::UNSIGNED_LONG_LONG_INTEGER:
-            file << next->u_.ull;
-            break;
-          case LogType::FLOAT:
-            file << next->u_.f;
-            break;
-          case LogType::DOUBLE:
-            file << next->u_.d;
-            break;
+        case LogType::CHAR:
+          file << next->u_.c;
+          break;
+        case LogType::INTEGER:
+          file << next->u_.i;
+          break;
+        case LogType::LONG_INTEGER:
+          file << next->u_.l;
+          break;
+        case LogType::LONG_LONG_INTEGER:
+          file << next->u_.ll;
+          break;
+        case LogType::UNSIGNED_INTEGER:
+          file << next->u_.u;
+          break;
+        case LogType::UNSIGNED_LONG_INTEGER:
+          file << next->u_.ul;
+          break;
+        case LogType::UNSIGNED_LONG_LONG_INTEGER:
+          file << next->u_.ull;
+          break;
+        case LogType::FLOAT:
+          file << next->u_.f;
+          break;
+        case LogType::DOUBLE:
+          file << next->u_.d;
+          break;
         }
         queue.updateReadIndex();
       }
@@ -77,11 +78,12 @@ class Logger final {
     }
   }
 
-  explicit Logger(const std::string &file_name_)
+  explicit Logger(const std::string& file_name_)
       : file_name(file_name_), queue(LOCK_FREE_QUEUE_SIZE) {
     file.open(file_name);
     ASSERT(file.is_open(), "Could not open the log file " + file_name);
-    logger_thread = createAndStartThread(-1, "Common/Logger", [this]() { flushQueue(); });
+    logger_thread =
+        createAndStartThread(-1, "Common/Logger", [this]() { flushQueue(); });
     ASSERT(logger_thread != nullptr, "Fail to start the Logger thread");
   }
 
@@ -97,24 +99,28 @@ class Logger final {
   }
 
   Logger() = delete;
-  Logger(const Logger &) = delete;
-  Logger(const Logger &&) = delete;
-  Logger &operator=(const Logger &) = delete;
-  Logger &operator=(const Logger &&) = delete;
+  Logger(const Logger&) = delete;
+  Logger(const Logger&&) = delete;
+  Logger& operator=(const Logger&) = delete;
+  Logger& operator=(const Logger&&) = delete;
 
-  auto pushValue(const LogElement &log_element) noexcept {
+  auto pushValue(const LogElement& log_element) noexcept {
     *(queue.getNextToWrite()) = log_element;
     queue.updateWriteIndex();
   }
 
-  auto pushValue(const char value) noexcept { pushValue(LogElement{LogType::CHAR, {.c = value}}); }
-  auto pushValue(const char *value) noexcept {
+  auto pushValue(const char value) noexcept {
+    pushValue(LogElement{LogType::CHAR, {.c = value}});
+  }
+  auto pushValue(const char* value) noexcept {
     while (*value) {
       pushValue(*value);
       value++;
     }
   }
-  auto pushValue(const std::string &value) noexcept { pushValue(value.c_str()); }
+  auto pushValue(const std::string& value) noexcept {
+    pushValue(value.c_str());
+  }
 
   auto pushValue(const int value) noexcept {
     pushValue(LogElement{LogType::INTEGER, {.i = value}});
@@ -141,8 +147,8 @@ class Logger final {
     pushValue(LogElement{LogType::DOUBLE, {.d = value}});
   }
 
-  template <typename T, typename... A>
-  auto log(const char *s, const T &value, A... args) noexcept {
+  template<typename T, typename... A>
+  auto log(const char* s, const T& value, A... args) noexcept {
     while (*s) {
       if (*s == '%') {
         if (UNLIKELY(*(s + 1) == '%')) {
@@ -158,7 +164,7 @@ class Logger final {
     FATAL("extra arguments provided to log()");
   }
 
-  auto log(const char *s) noexcept {
+  auto log(const char* s) noexcept {
     while (*s) {
       if (*s == '%') {
         if (UNLIKELY(*(s + 1) == '%')) {
@@ -171,11 +177,11 @@ class Logger final {
     }
   }
 
- private:
+private:
   const std::string file_name;
   std::ofstream file;
   LockFreeQueue<LogElement> queue;
   std::atomic<bool> running = {true};
-  std::thread *logger_thread = nullptr;
+  std::thread* logger_thread = nullptr;
 };
 }  // namespace Common
