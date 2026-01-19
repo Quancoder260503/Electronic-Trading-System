@@ -15,7 +15,8 @@ enum class MarketUpdateType : uint8_t {
   CANCEL = 3,
   TRADE = 4
 };
-inline std::string MarketUpdateType(ClientRequestType type) {
+
+inline std::string marketUpdateTypeToString(MarketUpdateType type) {
   switch (type) {
   case MarketUpdateType::ADD:
     return "ADD";

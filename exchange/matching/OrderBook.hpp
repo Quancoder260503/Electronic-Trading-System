@@ -39,7 +39,7 @@ private:
 
   ClientOrderHashMap cid_oid_to_order;
 
-  MemPool<MatchingEnginerOrderAtPrice> orders_at_price_pool;
+  MemPool<MatchingEngineOrderAtPrice> orders_at_price_pool;
 
   MatchingEngineOrderAtPrice* bids_by_price = nullptr;
   MatchingEngineOrderAtPrice* asks_by_price = nullptr;
@@ -62,7 +62,7 @@ private:
   }
 
   auto priceToIndex(Price price) const noexcept {
-    return price % MATCHING_ENGINE_MAX_PRICE_LEVELs; 
+    return price % MATCHING_ENGINE_MAX_PRICE_LEVELS; 
   }
 
   auto getOrdersAtPrice(Price price) const noexcept
@@ -70,7 +70,7 @@ private:
     return price_orders_at_price.at(priceToIndex(price));
   }
 
-  auto getNextPriority(Price price) noexcept {
+  auto getNextPriority(Price price) noexcept -> Priority {
     const auto orders_at_price = getOrdersAtPrice(price);
     if (!orders_at_price) { return 1; }
     return orders_at_price->first_order->prev_order->priority + 1;
@@ -131,7 +131,7 @@ private:
                                                 : asks_by_price);
 
     if (UNLIKELY(!best_order_by_price)) {
-      (new_orders_at_price->sice == Side::BUY ? bids_by_price : asks_by_price) =
+      (new_orders_at_price->side == Side::BUY ? bids_by_price : asks_by_price) =
           new_orders_at_price;
       new_orders_at_price->prev_entry = new_orders_at_price->next_entry =
           new_orders_at_price;

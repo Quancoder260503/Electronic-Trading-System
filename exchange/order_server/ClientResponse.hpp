@@ -15,7 +15,7 @@ enum class ClientResponseType : uint8_t {
   FILLED = 3,
   CANCEL_REJECTED = 4
 };
-inline std::string ClientResponseTypeToString(ClientResponseType type) {
+inline std::string clientResponseTypeToString(ClientResponseType type) {
   switch (type) {
   case ClientResponseType::INVALID:
     return "INVALID";

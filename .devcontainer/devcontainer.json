@@ -1,0 +1,39 @@
+{
+  "name": "Electronic Trading System",
+  "image": "mcr.microsoft.com/devcontainers/cpp:1-ubuntu-22.04",
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools",
+        "ms-vscode.cpptools-extension-pack",
+        "xaver.clang-format",
+        "ms-vscode.makefile-tools",
+        "twxs.cmake"
+      ],
+      "settings": {
+        "C_Cpp.default.cppStandard": "c++20",
+        "C_Cpp.default.cStandard": "c17",
+        "C_Cpp.formatting": "clangFormat",
+        "[cpp]": {
+          "editor.formatOnSave": true,
+          "editor.defaultFormatter": "xaver.clang-format"
+        },
+        "[c]": {
+          "editor.formatOnSave": true,
+          "editor.defaultFormatter": "xaver.clang-format"
+        },
+        "files.exclude": {
+          "**/.o": true,
+          "**/.dist": true
+        }
+      }
+    }
+  },
+  "postCreateCommand": "apt-get update && apt-get install -y clang-format clang-tools gdb valgrind && make help",
+  "remoteUser": "vscode",
+  "workspaceFolder": "/workspaces/Electronic-Trading-System"
+}

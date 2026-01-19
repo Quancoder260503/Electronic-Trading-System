@@ -4,6 +4,8 @@
 
 #include "common/Types.hpp"
 
+using namespace Common; 
+
 namespace Exchange {
 struct MatchingEngineOrder {
   TickerID ticker_id = TICKER_ID_INVALID; // stock ticker 
@@ -23,9 +25,9 @@ struct MatchingEngineOrder {
   MatchingEngineOrder(TickerID ticker_id_, ClientID client_id_,
                       OrderID client_order_id_, OrderID market_order_id_,
                       Side side_, Price price_, Quantity quantity_,
-                      Priority priority_ MatchingEnginerOrder* prev_order_,
+                      Priority priority_, MatchingEngineOrder* prev_order_,
                       MatchingEngineOrder* next_order_) noexcept
-      : ticket_id(ticket_id_),
+      : ticker_id(ticker_id_),
         client_id(client_id_),
         client_order_id(client_order_id_),
         market_order_id(market_order_id_),
@@ -44,6 +46,7 @@ struct MatchingEngineOrderAtPrice {
   Price price = PRICE_INVALID;
 
   MatchingEngineOrder* first_order = nullptr; 
+  
   MatchingEngineOrderAtPrice* prev_entry = nullptr;
   MatchingEngineOrderAtPrice* next_entry = nullptr;
 
@@ -54,8 +57,8 @@ struct MatchingEngineOrderAtPrice {
       : side(side_),
         price(price_),
         first_order(first_order_),
-        next_entry(next_entry_),
-        prev_entry(prev_entry_) {}
+        prev_entry(prev_entry_),
+        next_entry(next_entry_) {}
 
   auto toString() const {
     std::stringstream ss;
@@ -64,9 +67,9 @@ struct MatchingEngineOrderAtPrice {
        << "first_me_order:"
        << (first_order ? first_order->toString() : "null") << " "
        << "prev:"
-       << priceToString(prev_entry ? prev_entry->price : Price_INVALID) << " "
+       << priceToString(prev_entry ? prev_entry->price : PRICE_INVALID) << " "
        << "next:"
-       << priceToString(next_entry ? next_entry->price : Price_INVALID) << "]";
+       << priceToString(next_entry ? next_entry->price : PRICE_INVALID) << "]";
     return ss.str();
   }
 };

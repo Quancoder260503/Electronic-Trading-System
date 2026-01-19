@@ -13,7 +13,7 @@ enum class ClientRequestType : uint8_t {
   NEW = 1,
   CANCEL = 2,
 };
-inline std::string ClientRequestTypeToString(ClientRequestType type) {
+inline std::string clientRequestTypeToString(ClientRequestType type) {
   switch (type) {
   case ClientRequestType::NEW:
     return "NEW";

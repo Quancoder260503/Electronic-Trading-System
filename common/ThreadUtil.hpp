@@ -1,7 +1,6 @@
 #pragma once
 #include <sys/syscall.h>
 #include <unistd.h>
-
 #include <atomic>
 #include <iostream>
 #include <thread>

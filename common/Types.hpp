@@ -29,7 +29,7 @@ constexpr size_t MATCHING_ENGINE_MAX_NUM_CLIENTS =
 constexpr size_t MATCHING_ENGINE_MAX_ORDER_IDS =
     1024 * 1024;  // maxmimum number of processed orders possible for a single
                   // trading arguments
-constexpr size_t MATCHING_ENGINE_MAX_PRICE_LEVELs =
+constexpr size_t MATCHING_ENGINE_MAX_PRICE_LEVELS =
     256;  // represent the maxmimum depth of price levels for limit order book
           // that the matching engine maintains
 
@@ -40,13 +40,13 @@ constexpr auto PRICE_INVALID = std::numeric_limits<Price>::max();
 constexpr auto QUANTITY_INVALID = std::numeric_limits<Quantity>::max();
 constexpr auto PRIORITY_INVALID = std::numeric_limits<Priority>::max();
 
-inline auto orderIdToString(OrderId order_id) -> std::string {
+inline auto orderIdToString(OrderID order_id) -> std::string {
   if (UNLIKELY(order_id == ORDER_ID_INVALID)) { return "INVALID"; }
   return std::to_string(order_id);
 }
 
 inline auto tickerIdToString(TickerID ticker_id) -> std::string {
-  if (UNLIKELY(ticker_id == TICKER_ID_INVALIUD)) { return "INVALID"; }
+  if (UNLIKELY(ticker_id == TICKER_ID_INVALID)) { return "INVALID"; }
   return std::to_string(ticker_id);
 }
 

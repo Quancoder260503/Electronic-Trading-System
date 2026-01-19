@@ -27,22 +27,22 @@ public:
       const MatchingEngineClientRequest* client_request) noexcept -> void {
     auto order_book = ticker_order_book[client_request->ticker_id];
     switch (client_request->type) {
-    case ClientRequestType::NEW: {
+    case ClientRequestType::NEW : {
       order_book->add(client_request->client_id, client_request->ticker_id,
                       client_request->side, client_request->price,
                       client_request->quantity);
     } break;
 
-    case ClientRequestType::CANCEL {
-      order_book->cancel(client_request->client_id;
+    case ClientRequestType::CANCEL :  {
+      order_book->cancel(client_request->client_id, 
                          client_request->order_id, client_request->ticker_id);
     } break;
 
-        default: {
+    default: {
       FATAL("Received invalid client-request-type:" +
-            ClientRequestTypeToString(client_request->type))
-    } break;
-    }
+            clientRequestTypeToString(client_request->type)); 
+    } break; 
+   }
   }
 
   auto sendClientResponse(
@@ -79,7 +79,6 @@ public:
       }
     }
   }
-
 private:
   MatchingEngineOrderBook ticker_order_book;
   ClientRequestLFQueue* incoming_requests = nullptr;
@@ -89,5 +88,5 @@ private:
   volatile bool run = false;  // accessed by different threads
   std::string time_str;
   Logger logger;
-}
+}; 
 }  // namespace Exchange
