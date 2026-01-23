@@ -4,11 +4,10 @@
 #include "common/ThreadUtil.hpp"
 #include "common/LockFreeQueue.hpp"
 #include "common/Macros.hpp"
-#include "common/Macros.hpp"
 #include "common/McastSocket.hpp"
 #include "common/Mempool.hpp"
 #include "common/Logging.hpp"
-#include "market_data/MarketUpdate.hpp" 
+#include "MarketUpdate.hpp" 
 #include "matching/Order.hpp"
 
 using namespace Common; 

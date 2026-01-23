@@ -33,7 +33,7 @@ namespace Exchange {
     MarketUpdateLFQueue *outgoing_market_updates = nullptr; 
     
     // Lock free queue on which we forward the incremental market data updates sent to the snapshot synthesis
-    MDPMarketUpdateLFQueue *snapshot_market_updates = nullptr; 
+    MDPMarketUpdateLFQueue snapshot_market_updates; 
     
     volatile bool is_running = false; 
 
