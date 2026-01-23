@@ -23,8 +23,8 @@ int main(void) {
     logger.log("TCPServer::defaultRecvFinishedCallback()\n");
   };
 
-  auto tcpClientRecvCCallback = [&](TCPSocket* socket,
-                                    Nanos rx_time) noexcept -> void {
+  auto tcpClientRecvCallback = [&](TCPSocket* socket,
+                                   Nanos rx_time) noexcept -> void {
     const std::string recv_msg =
         std::string(socket->recv_buffer.data(), socket->next_recv_valid_index);
     socket->next_recv_valid_index = 0;
@@ -46,7 +46,7 @@ int main(void) {
   std::vector<TCPSocket*> clients(5);
   for (size_t i = 0; i < clients.size(); i++) {
     clients[i] = new TCPSocket(logger);
-    clients[i]->recv_callback = tcpClientRecvCCallback;
+    clients[i]->recv_callback = tcpClientRecvCallback;
     logger.log("Connecting TCPClient-[%] on ip:% iface:% port:%\n", i, ip,
                iface, port);
     clients[i]->connect(ip, iface, port, false);

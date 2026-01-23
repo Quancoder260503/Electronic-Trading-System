@@ -10,10 +10,13 @@ namespace Exchange {
 #pragma pack(push, 1)  // optimize memory size
 enum class MarketUpdateType : uint8_t {
   INVALID = 0,
-  ADD = 1,
-  MODIFY = 2,
-  CANCEL = 3,
-  TRADE = 4
+  CLEAR = 1, 
+  ADD = 2,
+  MODIFY = 3,
+  CANCEL = 4,
+  TRADE = 5, 
+  SNAPSHOT_START = 6, 
+  SNAPSHOT_END   = 7
 };
 
 inline std::string marketUpdateTypeToString(MarketUpdateType type) {
@@ -55,7 +58,23 @@ struct MatchingEngineMarketUpdate {
   }
 };
 
+// Market Data Public Update 
+struct MDPMarketUpdate { 
+  size_t sequence_number = 0; 
+  MatchingEngineMarketUpdate me_market_update; 
+  auto toString() const { 
+    std::stringstream ss; 
+    ss << "MDPMarketUpdate"
+         << " ["
+         << " seq:" << sequence_number
+         << " " << me_market_update.toString()
+         << "]";
+    return ss.str();
+  }
+}; 
+
 #pragma pack(pop)
 
 typedef LockFreeQueue<MatchingEngineMarketUpdate> MarketUpdateLFQueue;
+typedef LockFreeQueue<MDPMarketUpdate>MDPMarketUpdateLFQueue; 
 }  // namespace Exchange

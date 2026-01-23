@@ -58,6 +58,21 @@ struct MatchingEngineClientResponse {
     return ss.str();
   }
 };
+
+struct OrderManagementClientResponse { 
+  size_t sequence_number = 0; 
+  MatchingEngineClientResponse me_client_response; 
+  auto toString() const {
+    std::stringstream ss;
+    ss << "OrderManagementClientResponse"
+       << " ["
+       << "seq:" << sequence_number
+       << " " << me_client_response.toString()
+       << "]";
+    return ss.str();
+  }
+}; 
+
 #pragma pack(pop)
 typedef LockFreeQueue<MatchingEngineClientResponse> ClientResponseLFQueue;
 }  // namespace Exchange

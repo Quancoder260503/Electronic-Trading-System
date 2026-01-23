@@ -24,6 +24,8 @@ inline std::string clientRequestTypeToString(ClientRequestType type) {
   }
   return "UNKNOWN";
 }
+
+// Used by matching engine to process client request 
 struct MatchingEngineClientRequest {
   ClientRequestType type = ClientRequestType::INVALID;
   ClientID client_id = CLIENT_ID_INVALID;
@@ -46,6 +48,21 @@ struct MatchingEngineClientRequest {
     return ss.str();
   }
 };
+
+// Used by market participants to send order requests to exchange gateway server 
+struct OrderManagementClientRequest { 
+  size_t sequence_number = 0;
+  MatchingEngineClientRequest me_client_request; 
+  auto toString() const {
+    std::stringstream ss;
+    ss << "OrderManagementClientRequest"
+       << " ["
+       << "seq:" << sequence_number
+       << " " << me_client_request.toString()
+       << "]";
+    return ss.str();
+  }
+}; 
 #pragma pack(pop)
 typedef LockFreeQueue<MatchingEngineClientRequest> ClientRequestLFQueue;
 }  // namespace Exchange

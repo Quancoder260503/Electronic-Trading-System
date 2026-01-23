@@ -95,8 +95,7 @@ inline auto setTTL(int fd, int ttl) -> bool {
 }
 
 // add membership / subscription to the multicast stream specified
-inline auto join(int fd, const std::string& ip, const std::string& iface,
-                 int port) -> bool {
+inline auto join(int fd, const std::string& ip) -> bool {
   const ip_mreq mreq{{inet_addr(ip.c_str())}, {htonl(INADDR_ANY)}};
   return (setsockopt(fd, IPPROTO_IP, IP_ADD_MEMBERSHIP, &mreq, sizeof(mreq)) !=
           -1);

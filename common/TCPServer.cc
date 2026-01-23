@@ -96,7 +96,7 @@ auto TCPServer::sendAndRecv() noexcept -> void {
   std::for_each(receive_sockets.begin(), receive_sockets.end(),
                 [&recv](auto socket) { recv |= socket->sendAndRecv(); });
   if (recv) { recv_finished_callback(); }
-  std::for_each(receive_sockets.begin(), receive_sockets.end(),
+  std::for_each(send_sockets.begin(), send_sockets.end(),
                 [](auto socket) { socket->sendAndRecv(); });
 }
 

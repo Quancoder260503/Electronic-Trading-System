@@ -24,6 +24,10 @@ MARKET_DATA_DIR = $(EXCHANGE_DIR)/market_data
 COMMON_TCP_SRC = $(COMMON_DIR)/TCPServer.cc $(COMMON_DIR)/TCPSocket.cc
 COMMON_TCP_OBJ = $(COMMON_TCP_SRC:.cc=.o)
 
+# Common networking components
+COMMON_NET_SRC = $(COMMON_DIR)/McastSocket.cc
+COMMON_NET_OBJ = $(COMMON_NET_SRC:.cc=.o)
+
 # Exchange matching engine components
 MATCHING_SRC = $(MATCHING_DIR)/Order.cc $(MATCHING_DIR)/MatchingEngine.cc $(MATCHING_DIR)/OrderBook.cc
 MATCHING_OBJ = $(MATCHING_SRC:.cc=.o)
@@ -31,8 +35,10 @@ MATCHING_OBJ = $(MATCHING_SRC:.cc=.o)
 # Exchange order server components (header-only)
 ORDER_SERVER_HEADERS = $(ORDER_SERVER_DIR)/ClientRequest.hpp $(ORDER_SERVER_DIR)/ClientResponse.hpp
 
-# Exchange market data components (header-only)
-MARKET_DATA_HEADERS = $(MARKET_DATA_DIR)/MarketUpdate.hpp
+# Exchange market data components
+MARKET_DATA_SRC = $(MARKET_DATA_DIR)/MarketDataPublisher.cc $(MARKET_DATA_DIR)/SnapshotSynthesizer.cc
+MARKET_DATA_OBJ = $(MARKET_DATA_SRC:.cc=.o)
+MARKET_DATA_HEADERS = $(MARKET_DATA_DIR)/MarketUpdate.hpp $(MARKET_DATA_DIR)/MarketDataPublisher.hpp $(MARKET_DATA_DIR)/SnapshotSynthesizer.hpp
 
 # Example programs
 EXAMPLES = SocketExample LoggingExample ThreadExample QueueExample
@@ -71,7 +77,7 @@ all: $(EXAMPLE_EXE) $(EXCHANGE_MAIN_EXE)
 	$(CXX) $(CXXFLAGS) -o $@ $^ -l$(LIB)
 
 # Exchange main target
-$(EXCHANGE_MAIN_EXE): $(EXCHANGE_MAIN_SRC:.cc=.o) $(COMMON_TCP_OBJ) $(MATCHING_OBJ)
+$(EXCHANGE_MAIN_EXE): $(EXCHANGE_MAIN_SRC:.cc=.o) $(COMMON_TCP_OBJ) $(COMMON_NET_OBJ) $(MATCHING_OBJ) $(MARKET_DATA_OBJ)
 	@mkdir -p .dist
 	$(CXX) $(CXXFLAGS) -o $@ $^ -l$(LIB)
 
@@ -91,7 +97,10 @@ $(MATCHING_DIR)/OrderBook.o  : $(MATCHING_DIR)/OrderBook.cc $(MATCHING_DIR)/Orde
 $(MATCHING_DIR)/MatchingEngine.o : $(MATCHING_DIR)/MatchingEngine.cc $(MATCHING_DIR)/MatchingEngine.hpp $(MATCHING_DIR)/OrderBook.hpp $(MATCHING_DIR)/Order.hpp $(COMMON_DIR)/Types.hpp $(COMMON_DIR)/Logging.hpp
 $(ORDER_SERVER_DIR)/ClientRequest.hpp : $(COMMON_DIR)/Types.hpp $(COMMON_DIR)/LockFreeQueue.hpp
 $(ORDER_SERVER_DIR)/ClientResponse.hpp : $(COMMON_DIR)/Types.hpp $(COMMON_DIR)/LockFreeQueue.hpp
+$(COMMON_DIR)/McastSocket.o : $(COMMON_DIR)/McastSocket.cc $(COMMON_DIR)/McastSocket.hpp $(COMMON_DIR)/SocketUtil.hpp $(COMMON_DIR)/Logging.hpp
 $(MARKET_DATA_DIR)/MarketUpdate.hpp : $(COMMON_DIR)/Types.hpp $(COMMON_DIR)/LockFreeQueue.hpp
+$(MARKET_DATA_DIR)/MarketDataPublisher.o : $(MARKET_DATA_DIR)/MarketDataPublisher.cc $(MARKET_DATA_DIR)/MarketDataPublisher.hpp $(MARKET_DATA_DIR)/MarketUpdate.hpp $(COMMON_DIR)/McastSocket.hpp $(COMMON_DIR)/Logging.hpp
+$(MARKET_DATA_DIR)/SnapshotSynthesizer.o : $(MARKET_DATA_DIR)/SnapshotSynthesizer.cc $(MARKET_DATA_DIR)/SnapshotSynthesizer.hpp $(MARKET_DATA_DIR)/MarketUpdate.hpp $(COMMON_DIR)/Logging.hpp
 $(EXCHANGE_DIR)/$(EXCHANGE_MAIN).o : $(EXCHANGE_MAIN_SRC) $(MATCHING_DIR)/MatchingEngine.hpp $(MATCHING_DIR)/OrderBook.hpp $(COMMON_DIR)/TCPServer.hpp
 
 .PHONY: format clean debug all run run-socket run-logging run-thread run-queue run-exchange help
@@ -105,7 +114,7 @@ debug:
 	$(MAKE) all DEBUG=1
 
 clean:
-	rm -f *.o $(COMMON_TCP_OBJ) $(MATCHING_OBJ) $(ALL_EXE)
+	rm -f *.o $(COMMON_TCP_OBJ) $(COMMON_NET_OBJ) $(MATCHING_OBJ) $(MARKET_DATA_OBJ) $(ALL_EXE)
 	rm -rf .dist
 
 run-socket: .dist/SocketExample
