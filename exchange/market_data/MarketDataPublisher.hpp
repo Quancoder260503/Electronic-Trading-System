@@ -1,8 +1,8 @@
 #pragma once 
-
 #include <functional> 
 #include "MarketUpdate.hpp"
 #include "common/McastSocket.hpp"
+#include "SnapshotSynthesizer.hpp"
 
 namespace Exchange { 
  class MarketDataPublisher {
@@ -40,7 +40,7 @@ namespace Exchange {
     std::string time_str; 
     Logger logger;
     // Multicast socket to propagate incremental data stream    
-    MCastSocket incremental_socket; 
+    Common::McastSocket incremental_socket; 
     // Snapshot synthesize which synthesizes and publishes limit order book snapshots 
     SnapshotSynthesizer *snapshot_synthesizer = nullptr; 
  }; 

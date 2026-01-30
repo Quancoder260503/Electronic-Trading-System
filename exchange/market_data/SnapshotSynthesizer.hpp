@@ -8,17 +8,17 @@
 #include "common/Mempool.hpp"
 #include "common/Logging.hpp"
 #include "MarketUpdate.hpp" 
-#include "matching/Order.hpp"
+#include "exchange/matching/Order.hpp"
 
 using namespace Common; 
 
 namespace Exchange { 
    class SnapshotSynthesizer { 
     public: 
-      SnapshotSynthesizer(MDPMarketUpdaLFQueue *market_updates, const std::string &iface, 
+      SnapshotSynthesizer(MDPMarketUpdateLFQueue *market_updates, const std::string &iface, 
          const std::string &snapshot_ip, int snapshot_port); 
              
-      ~SnapshotSynthesizer (); 
+      ~SnapshotSynthesizer () noexcept;
 
       auto start() noexcept -> void; 
 
@@ -26,9 +26,10 @@ namespace Exchange {
 
       auto run() noexcept -> void; 
     
-      auto publishSnapshot(); 
+      auto publishSnapshot() noexcept -> void; 
 
-      auto addToSnapshot(const MDPMarketUpdate *market_update); 
+      auto addToSnapshot(const MDPMarketUpdate *market_update) noexcept -> void; 
+      
 
       SnapshotSynthesizer () = delete; 
       SnapshotSynthesizer(const SnapshotSynthesizer &)  = delete; 
