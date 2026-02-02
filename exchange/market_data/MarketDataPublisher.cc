@@ -1,7 +1,4 @@
 #include "MarketDataPublisher.hpp"
-#include "common/Types.hpp
-#include "common/Macros.hpp"
-#include <string> 
 
 namespace Exchange {
  MarketDataPublisher::MarketDataPublisher(
@@ -16,7 +13,7 @@ namespace Exchange {
  { 
   ASSERT(incremental_socket.init(incremental_ip, iface, incremental_port, false) >= 0, 
     "Unable to create incremental mcast socket. error : " + std::string(std::strerror(errno))); 
-  snapshot_synthesizer = new SnapshotSynthesizer(&snapshot_market_updates, )
+  snapshot_synthesizer = new SnapshotSynthesizer(&snapshot_market_updates, iface, snapshot_ip, snapshot_port); 
  }
  
  MarketDataPublisher::~MarketDataPublisher() { 
@@ -27,23 +24,23 @@ namespace Exchange {
   snapshot_synthesizer = nullptr; 
  }
 
- MarketDataPublisher::start() { 
+ auto MarketDataPublisher::start() noexcept -> void { 
   is_running = true; 
   ASSERT(Common::createAndStartThread(-1, "Exchange/MarketDataPublisher", [this]() { 
    run(); }) != nullptr, "Failed to start Market Data thread."); 
   snapshot_synthesizer->start(); 
 
  }
- MarketDataPublisher::stop() { 
+ auto MarketDataPublisher::stop() noexcept -> void { 
   is_running = false; 
   snapshot_synthesizer->stop(); 
  }
 
- MarketDataPublisher::run() noexcept -> void {
+ auto MarketDataPublisher::run() noexcept -> void {
   logger.log("%:% %() %\n", __FILE__, __LINE__, __FUNCTION__, Common::getCurrentTimeStr(&time_str));
   while(is_running) { 
    for(auto market_update = outgoing_market_updates->getNextToRead(); outgoing_market_updates->size() && market_update; 
-      market_update = out_going_market_updates->getNextToRead()) { 
+      market_update = outgoing_market_updates->getNextToRead()) { 
     logger.log("%:% %() % Sending seq:% %\n", 
       __FILE__, __LINE__, __FUNCTION__, 
       Common::getCurrentTimeStr(&time_str), 
@@ -60,7 +57,7 @@ namespace Exchange {
     next_write->sequence_number = next_increment_sequence_number; 
     next_write->me_market_update = *market_update;
     snapshot_market_updates.updateWriteIndex(); 
-    ++next_incremental_sequence_number; 
+    ++next_increment_sequence_number; 
    }
    incremental_socket.sendAndRecv(); 
   }

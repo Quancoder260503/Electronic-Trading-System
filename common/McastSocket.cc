@@ -1,39 +1,45 @@
-#pragma once 
-
-#include <functional>
-#include "SocketUtil.hpp"
-#include "Logging.hpp"
+#include "Macros.hpp"
+#include "McastSocket.hpp"
 
 namespace Common { 
- constexpr size_t MULTICAST_BUFFER_SIZE = 64 * 1024 * 1024;
- 
- struct McastSocket { 
-  McastSocket(Logger &logger_) : logger(logger_) { 
-   recv_buffer.resize(MULTICAST_BUFFER_SIZE); 
-   send_buffer.resize(MULTICAST_BUFFER_SIZE); 
+  auto McastSocket::init(const std::string &ip, const std::string &iface, int port, bool is_listening) -> int { 
+    const SocketConfig socket_cfg{ip, iface, port, true, is_listening, false};
+    socket_fd = createSocket(logger, socket_cfg); 
+    return socket_fd;  
+  }  
+
+  auto McastSocket::join(const std::string &ip) -> bool { 
+    return Common::join(socket_fd, ip); 
+  }
+  
+  auto McastSocket::leave(const std::string &, int) -> void { 
+    close(socket_fd); 
+    socket_fd = -1; 
+  } 
+
+  auto McastSocket::sendAndRecv() noexcept -> bool { 
+    const ssize_t n_recv = recv(socket_fd, recv_buffer.data() + next_recv_valid_index, MULTICAST_BUFFER_SIZE - next_recv_valid_index, MSG_DONTWAIT); 
+    if(n_recv > 0) { 
+      next_recv_valid_index += n_recv; 
+      logger.log("%:% %() % read socket:% len:%\n", 
+        __FILE__, __LINE__, __FUNCTION__, 
+        Common::getCurrentTimeStr(&time_str), socket_fd, next_recv_valid_index);
+      recv_callback(this); 
+    }   
+    if(next_send_valid_index > 0) { 
+      ssize_t n_send = ::send(socket_fd, send_buffer.data(), next_send_valid_index, MSG_DONTWAIT | MSG_NOSIGNAL); 
+      logger.log("%:% %() % send socket:% len:%\n", 
+        __FILE__, __LINE__, __FUNCTION__, 
+        Common::getCurrentTimeStr(&time_str), socket_fd, n_send);
+      next_send_valid_index = 0;    
+    }
+    return (n_recv > 0); 
   }
 
-  auto init(const std::string &ip, const std::string &iface, int port, bool listening) -> int; 
-
-  auto join(const std::string &ip) -> bool; 
-
-  auto leave(const std::string &ip, int port) -> void; 
-
-  auto sendAndRecv() noexcept -> bool; 
-
-  auto send(const void *data, size_t len) noexcept -> void; 
-
-  int socket_fd = -1; 
-  
-  size_t next_send_valid_index = 0; 
-  size_t next_recv_valid_index = 0; 
-  std::vector<char> recv_buffer; 
-  std::vector<char> send_buffer; 
-
-  std::function<void(McastSocket *s)> recv_callback = nullptr; 
-
-  std::string time_str; 
-  Logger &logger; 
-
- }; 
+  auto McastSocket::send(const void *data, size_t len) noexcept -> void { 
+   memcpy(send_buffer.data() + next_send_valid_index, data, len); 
+   next_send_valid_index += len; 
+   ASSERT(next_send_valid_index < MULTICAST_BUFFER_SIZE, 
+      "Mcast socket buffer filled up and sendAndRecv() not called. "); 
+  }
 }
