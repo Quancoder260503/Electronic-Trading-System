@@ -1,144 +1,121 @@
-CXX = g++
-CXXSTD = -std=c++20
-CXXWARN = -Wall -Wextra -Wpedantic -Wshadow -Wconversion -Wcast-align 
-OPT = -O2
+SHELL := /bin/bash
+
+CXX ?= g++
 DEBUG ?= 0
-SAN = 
-DEBUG_FLAGS =
-ifeq ($(DEBUG),1)
-SAN = -fsanitize=address,undefined -fno-omit-frame-pointer -g
-DEBUG_FLAGS = -DDEBUG_INVALID_REQUESTS
+SANITIZE ?= 0
+WARN_PROFILE ?= clean
+
+BUILD_DIR ?= .dist
+OBJ_DIR ?= $(BUILD_DIR)/obj
+
+CXXSTD := -std=c++20
+BASE_WARNINGS := -Wall -Wextra -Wpedantic
+STRICT_WARNINGS := $(BASE_WARNINGS) -Wshadow -Wconversion -Wcast-align
+CLEAN_WARNINGS := $(BASE_WARNINGS) -Wshadow -Wcast-align -Wno-unused-parameter -Wno-switch
+
+ifeq ($(WARN_PROFILE),strict)
+	WARNINGS := $(STRICT_WARNINGS)
+else
+	WARNINGS := $(CLEAN_WARNINGS)
 endif
-CXXFLAGS = $(CXXSTD) $(OPT) $(CXXWARN) $(SAN) $(DEBUG_FLAGS)
-INCLUDES = -I. -Icommon -Iexchange
-LIB = pthread
 
-# Directories
-COMMON_DIR = common
-EXCHANGE_DIR = exchange
-MATCHING_DIR = $(EXCHANGE_DIR)/matching
-ORDER_SERVER_DIR = $(EXCHANGE_DIR)/order_server
-MARKET_DATA_DIR = $(EXCHANGE_DIR)/market_data
+OPT_FLAGS := -O2
+DBG_FLAGS := -g3 -DDEBUG_INVALID_REQUESTS
+SAN_FLAGS := -fsanitize=address,undefined -fno-omit-frame-pointer
 
-# Common TCP library components
-COMMON_TCP_SRC = $(COMMON_DIR)/TCPServer.cc $(COMMON_DIR)/TCPSocket.cc
-COMMON_TCP_OBJ = $(COMMON_TCP_SRC:.cc=.o)
+CPPFLAGS := -I. -Icommon -Iexchange -Itrading
+CXXFLAGS := $(CXXSTD) $(WARNINGS) $(OPT_FLAGS) -MMD -MP
+LDFLAGS :=
+LDLIBS := -pthread
 
-# Common networking components
-COMMON_NET_SRC = $(COMMON_DIR)/McastSocket.cc
-COMMON_NET_OBJ = $(COMMON_NET_SRC:.cc=.o)
+ifeq ($(DEBUG),1)
+  CXXFLAGS := $(filter-out $(OPT_FLAGS),$(CXXFLAGS)) $(DBG_FLAGS)
+endif
 
-# Exchange matching engine components
-MATCHING_SRC = $(MATCHING_DIR)/Order.cc $(MATCHING_DIR)/MatchingEngine.cc $(MATCHING_DIR)/OrderBook.cc
-MATCHING_OBJ = $(MATCHING_SRC:.cc=.o)
+ifeq ($(SANITIZE),1)
+  CXXFLAGS += $(SAN_FLAGS)
+  LDFLAGS += $(SAN_FLAGS)
+endif
 
-# Exchange order server components
-ORDER_SERVER_SRC = $(ORDER_SERVER_DIR)/OrderServer.cc
-ORDER_SERVER_OBJ = $(ORDER_SERVER_SRC:.cc=.o)
-ORDER_SERVER_HEADERS = $(ORDER_SERVER_DIR)/ClientRequest.hpp $(ORDER_SERVER_DIR)/ClientResponse.hpp $(ORDER_SERVER_DIR)/OrderServer.hpp $(ORDER_SERVER_DIR)/FifoSequencer.hpp
+rwildcard = $(foreach d,$(wildcard $(1)/*),$(call rwildcard,$(d),$(2))) $(filter $(subst *,%,$(2)),$(wildcard $(1)/$(2)))
 
-# Exchange market data components
-MARKET_DATA_SRC = $(MARKET_DATA_DIR)/MarketDataPublisher.cc $(MARKET_DATA_DIR)/SnapshotSynthesizer.cc
-MARKET_DATA_OBJ = $(MARKET_DATA_SRC:.cc=.o)
-MARKET_DATA_HEADERS = $(MARKET_DATA_DIR)/MarketUpdate.hpp $(MARKET_DATA_DIR)/MarketDataPublisher.hpp $(MARKET_DATA_DIR)/SnapshotSynthesizer.hpp
+COMMON_SRCS := $(call rwildcard,common,*.cc)
+EXCHANGE_SRCS := $(call rwildcard,exchange,*.cc)
+TRADING_SRCS := $(call rwildcard,trading,*.cc)
 
-# Exchange main program
-EXCHANGE_MAIN = exchange_main
-EXCHANGE_MAIN_SRC = $(EXCHANGE_DIR)/$(EXCHANGE_MAIN).cc
-EXCHANGE_MAIN_EXE = .dist/$(EXCHANGE_MAIN) 
+EXCHANGE_MAIN_SRC := exchange/exchange_main.cc
+TRADING_MAIN_SRC := trading/trading_main.cc
 
-ALL_EXE = $(EXAMPLE_EXE) $(EXCHANGE_MAIN_EXE)
+EXCHANGE_LIB_SRCS := $(filter-out $(EXCHANGE_MAIN_SRC),$(EXCHANGE_SRCS))
+TRADING_LIB_SRCS := $(filter-out $(TRADING_MAIN_SRC),$(TRADING_SRCS))
+
+BIN_EXCHANGE := $(BUILD_DIR)/exchange_main
+BIN_TRADING := $(BUILD_DIR)/trading_main
+
+EXCHANGE_OBJS := $(patsubst %.cc,$(OBJ_DIR)/%.o,$(COMMON_SRCS) $(EXCHANGE_LIB_SRCS) $(EXCHANGE_MAIN_SRC))
+TRADING_OBJS := $(patsubst %.cc,$(OBJ_DIR)/%.o,$(COMMON_SRCS) $(TRADING_LIB_SRCS) $(TRADING_MAIN_SRC))
+
+DEPFILES := $(sort $(EXCHANGE_OBJS:.o=.d) $(TRADING_OBJS:.o=.d))
 
 .DEFAULT_GOAL := all
 
-all: $(EXAMPLE_EXE) $(EXCHANGE_MAIN_EXE)
+.PHONY: all exchange trading run-exchange run-trading debug sanitize strict clean format help
 
-# Socket example target
-.dist/SocketExample: SocketExample.o $(COMMON_TCP_OBJ)
-	@mkdir -p .dist
-	$(CXX) $(CXXFLAGS) -o $@ $^ -l$(LIB)
+all: exchange trading
 
-# Logging example target
-.dist/LoggingExample: LoggingExample.o
-	@mkdir -p .dist
-	$(CXX) $(CXXFLAGS) -o $@ $^ -l$(LIB)
+exchange: $(BIN_EXCHANGE)
 
-# Thread example target
-.dist/ThreadExample: ThreadExample.o
-	@mkdir -p .dist
-	$(CXX) $(CXXFLAGS) -o $@ $^ -l$(LIB)
+trading: $(BIN_TRADING)
 
-# Queue example target
-.dist/QueueExample: QueueExample.o
-	@mkdir -p .dist
-	$(CXX) $(CXXFLAGS) -o $@ $^ -l$(LIB)
+$(BIN_EXCHANGE): $(EXCHANGE_OBJS)
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
-# Exchange main target
-$(EXCHANGE_MAIN_EXE): $(EXCHANGE_MAIN_SRC:.cc=.o) $(COMMON_TCP_OBJ) $(COMMON_NET_OBJ) $(MATCHING_OBJ) $(ORDER_SERVER_OBJ) $(MARKET_DATA_OBJ)
-	@mkdir -p .dist
-	$(CXX) $(CXXFLAGS) -o $@ $^ -l$(LIB)
+$(BIN_TRADING): $(TRADING_OBJS)
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
-# Generic compilation rule
-%.o: %.cc
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
+$(OBJ_DIR)/%.o: %.cc
+	@mkdir -p $(dir $@)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
-# Explicit dependencies
-SocketExample.o              : SocketExample.cc $(COMMON_DIR)/TCPServer.hpp $(COMMON_DIR)/TCPSocket.hpp $(COMMON_DIR)/Logging.hpp
-$(COMMON_DIR)/TCPServer.o    : $(COMMON_DIR)/TCPServer.cc $(COMMON_DIR)/TCPServer.hpp $(COMMON_DIR)/TCPSocket.hpp $(COMMON_DIR)/Logging.hpp $(COMMON_DIR)/TimeUtil.hpp
-$(COMMON_DIR)/TCPSocket.o    : $(COMMON_DIR)/TCPSocket.cc $(COMMON_DIR)/TCPSocket.hpp $(COMMON_DIR)/Logging.hpp $(COMMON_DIR)/SocketUtil.hpp $(COMMON_DIR)/TimeUtil.hpp
-LoggingExample.o             : LoggingExample.cc $(COMMON_DIR)/Logging.hpp
-ThreadExample.o              : ThreadExample.cc $(COMMON_DIR)/ThreadUtil.hpp
-QueueExample.o               : QueueExample.cc $(COMMON_DIR)/ThreadUtil.hpp $(COMMON_DIR)/LockFreeQueue.hpp $(COMMON_DIR)/Mempool.hpp
-$(MATCHING_DIR)/Order.o      : $(MATCHING_DIR)/Order.cc $(MATCHING_DIR)/Order.hpp $(COMMON_DIR)/Types.hpp $(COMMON_DIR)/Logging.hpp
-$(MATCHING_DIR)/OrderBook.o  : $(MATCHING_DIR)/OrderBook.cc $(MATCHING_DIR)/OrderBook.hpp $(MATCHING_DIR)/Order.hpp $(COMMON_DIR)/Types.hpp $(COMMON_DIR)/Logging.hpp
-$(MATCHING_DIR)/MatchingEngine.o : $(MATCHING_DIR)/MatchingEngine.cc $(MATCHING_DIR)/MatchingEngine.hpp $(MATCHING_DIR)/OrderBook.hpp $(MATCHING_DIR)/Order.hpp $(COMMON_DIR)/Types.hpp $(COMMON_DIR)/Logging.hpp
-$(ORDER_SERVER_DIR)/ClientRequest.hpp : $(COMMON_DIR)/Types.hpp $(COMMON_DIR)/LockFreeQueue.hpp
-$(ORDER_SERVER_DIR)/ClientResponse.hpp : $(COMMON_DIR)/Types.hpp $(COMMON_DIR)/LockFreeQueue.hpp
-$(COMMON_DIR)/McastSocket.o : $(COMMON_DIR)/McastSocket.cc $(COMMON_DIR)/McastSocket.hpp $(COMMON_DIR)/SocketUtil.hpp $(COMMON_DIR)/Logging.hpp
-$(MARKET_DATA_DIR)/MarketUpdate.hpp : $(COMMON_DIR)/Types.hpp $(COMMON_DIR)/LockFreeQueue.hpp
-$(MARKET_DATA_DIR)/MarketDataPublisher.o : $(MARKET_DATA_DIR)/MarketDataPublisher.cc $(MARKET_DATA_DIR)/MarketDataPublisher.hpp $(MARKET_DATA_DIR)/MarketUpdate.hpp $(COMMON_DIR)/McastSocket.hpp $(COMMON_DIR)/Logging.hpp
-$(MARKET_DATA_DIR)/SnapshotSynthesizer.o : $(MARKET_DATA_DIR)/SnapshotSynthesizer.cc $(MARKET_DATA_DIR)/SnapshotSynthesizer.hpp $(MARKET_DATA_DIR)/MarketUpdate.hpp $(COMMON_DIR)/Logging.hpp
-$(ORDER_SERVER_DIR)/OrderServer.o : $(ORDER_SERVER_DIR)/OrderServer.cc $(ORDER_SERVER_DIR)/OrderServer.hpp $(ORDER_SERVER_DIR)/FifoSequencer.hpp $(ORDER_SERVER_DIR)/ClientRequest.hpp $(ORDER_SERVER_DIR)/ClientResponse.hpp $(COMMON_DIR)/TCPServer.hpp $(COMMON_DIR)/Logging.hpp
-$(EXCHANGE_DIR)/$(EXCHANGE_MAIN).o : $(EXCHANGE_MAIN_SRC) $(MATCHING_DIR)/MatchingEngine.hpp $(MATCHING_DIR)/OrderBook.hpp $(COMMON_DIR)/TCPServer.hpp
+run-exchange: $(BIN_EXCHANGE)
+	./$(BIN_EXCHANGE)
 
-.PHONY: format clean debug all run run-socket run-logging run-thread run-queue run-exchange help
-
-format:
-	clang-format -style=file -i *.cc *.hpp
-	clang-format -style=file -i $(COMMON_DIR)/*.cc $(COMMON_DIR)/*.hpp
-	clang-format -style=file -i $(EXCHANGE_DIR)/*/*.cc $(EXCHANGE_DIR)/*/*.hpp
+run-trading: $(BIN_TRADING)
+	@if [[ -z "$(TRADING_ARGS)" ]]; then \
+		echo "TRADING_ARGS is required."; \
+		echo "Example: make run-trading TRADING_ARGS='1 RANDOM 10 0.5 100 200 0.7'"; \
+		exit 1; \
+	fi
+	./$(BIN_TRADING) $(TRADING_ARGS)
 
 debug:
-	$(MAKE) all DEBUG=1
+	$(MAKE) all DEBUG=1 SANITIZE=0
+
+sanitize:
+	$(MAKE) all DEBUG=1 SANITIZE=1
+
+strict:
+	$(MAKE) all WARN_PROFILE=strict
+
+format:
+	find common exchange trading -type f \( -name '*.hpp' -o -name '*.cc' \) -print0 | xargs -0 clang-format -i
 
 clean:
-	rm -f *.o $(COMMON_TCP_OBJ) $(COMMON_NET_OBJ) $(MATCHING_OBJ) $(ORDER_SERVER_OBJ) $(MARKET_DATA_OBJ) $(ALL_EXE)
-	rm -rf .dist
-
-run-socket: .dist/SocketExample
-	./.dist/SocketExample
-
-run-logging: .dist/LoggingExample
-	./.dist/LoggingExample
-
-run-thread: .dist/ThreadExample
-	./.dist/ThreadExample
-
-run-queue: .dist/QueueExample
-	./.dist/QueueExample
-
-run-exchange: $(EXCHANGE_MAIN_EXE)
-	./$(EXCHANGE_MAIN_EXE)
+	rm -rf $(BUILD_DIR)
 
 help:
-	@echo "Available targets:"
-	@echo "  all              - Build all example programs and exchange_main (default)"
-	@echo "  debug            - Build with debug flags and sanitizers"
-	@echo "  run-socket       - Build and run SocketExample"
-	@echo "  run-logging      - Build and run LoggingExample"
-	@echo "  run-thread       - Build and run ThreadExample"
-	@echo "  run-queue        - Build and run QueueExample"
-	@echo "  run-exchange     - Build and run exchange_main"
-	@echo "  format           - Format all source files with clang-format"
-	@echo "  clean            - Remove all build artifacts"
-	@echo "  help             - Show this help message"
+	@echo "Targets:"
+	@echo "  all           Build exchange_main and trading_main (default)"
+	@echo "  exchange      Build only exchange_main"
+	@echo "  trading       Build only trading_main"
+	@echo "  run-exchange  Build and run exchange_main"
+	@echo "  run-trading   Build and run trading_main (requires TRADING_ARGS)"
+	@echo "  debug         Build with debug symbols"
+	@echo "  sanitize      Build with ASan + UBSan"
+	@echo "  strict        Build with strict warnings (includes -Wconversion)"
+	@echo "  format        Run clang-format over source and headers"
+	@echo "  clean         Remove all build artifacts"
+
+-include $(DEPFILES)

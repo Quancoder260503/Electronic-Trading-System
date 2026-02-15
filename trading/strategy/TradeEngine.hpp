@@ -83,9 +83,9 @@ namespace Trading {
       Logger logger;
 
       FeatureEngine feature_engine; 
-      PositionKeeper position_keeper; 
+      PositionKeeper position_keeper;
+      RiskManager  risk_manager;  
       OrderManager order_manager; 
-      RiskManager  risk_manager; 
       MarketMaker    *maker_algo = nullptr; 
       LiquidityTaker *taker_algo = nullptr; 
 

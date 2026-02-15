@@ -43,7 +43,7 @@ namespace Trading {
     );
   }
  
-  auto OrderManager::moveOrder(OMOrder *order, TickerID ticker_id, Price price, Side side, Quantity quantity) noexcept {  
+  auto OrderManager::moveOrder(OMOrder *order, TickerID ticker_id, Price price, Side side, Quantity quantity) noexcept -> void {  
    switch (order->order_state) { 
     case OMOrderState::LIVE : { 
       if(order->price != price || order->quantity != quantity) { 
@@ -80,7 +80,7 @@ namespace Trading {
   } 
   }
 
-  auto OrderManager::moveOrders(TickerID ticker_id, Price bid_price, Price ask_price, Quantity clip) noexcept { 
+  auto OrderManager::moveOrders(TickerID ticker_id, Price bid_price, Price ask_price, Quantity clip) noexcept -> void { 
    auto bid_order = &(ticker_side_orders.at(ticker_id).at(sideToIndex(Side::BUY))); 
    moveOrder(bid_order, ticker_id, bid_price, Side::BUY, clip); 
    auto ask_order = &(ticker_side_orders.at(ticker_id).at(sideToIndex(Side::SELL))); 

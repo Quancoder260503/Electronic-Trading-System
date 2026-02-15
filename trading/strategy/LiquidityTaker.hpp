@@ -19,7 +19,7 @@ namespace Trading {
 
     auto onOrderBookUpdate(TickerID ticker_id, Price price, Side side, const MarketOrderBook *book) noexcept -> void; 
 
-    auto onTradeUpdate(const Exchange::MatchingEngineMarketUpdate *market_update, MarketOrderBook *book) noexcept -> void; 
+    auto onTradeUpdate(const Exchange::MatchingEngineMarketUpdate *market_update, MarketOrderBook *) noexcept -> void; 
 
     auto onOrderUpdate(const Exchange::MatchingEngineClientResponse *client_response) noexcept -> void; 
   

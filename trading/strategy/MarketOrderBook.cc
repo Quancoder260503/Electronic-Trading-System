@@ -1,4 +1,5 @@
 #include "MarketOrderBook.hpp"
+#include "TradeEngine.hpp"
 
 namespace Trading { 
  MarketOrderBook::MarketOrderBook(TickerID ticker_id_, Logger *logger_) : 

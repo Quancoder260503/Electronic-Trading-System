@@ -46,8 +46,12 @@ namespace Trading {
     bool in_recovery_mode = false;
 
     // Information for the snapshot multicast stream 
-    const std::string iface, snapshot_ip, incremental_ip; 
-    const int snapshot_port, incremental_port;
+    const std::string iface;
+    
+    const std::string snapshot_ip; 
+    const int snapshot_port; 
+    const std::string incremental_ip; 
+    const int incremental_port;
      
     // Containers to queue up market data updates from the snapshot and incremental channels in order of increasing sequence numbers 
     typedef std::map<size_t, Exchange::MatchingEngineMarketUpdate>QueuedMarketUpdates; 
@@ -61,7 +65,7 @@ namespace Trading {
     auto recvCallback(McastSocket *socket) noexcept -> void; 
 
     // Queued up the messages 
-    auto queueMessage(bool is_snapshot, const Exchange::MDPMarketUpdate *updates); 
+    auto queueMessage(bool is_snapshot, const Exchange::MDPMarketUpdate *updates) -> void; 
 
     // Start the process of snapshot/synchronization by subscribing to the snapshot multicast stream 
     auto startSnapshotSync() noexcept -> void; 

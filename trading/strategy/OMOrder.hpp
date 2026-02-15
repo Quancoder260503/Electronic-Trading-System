@@ -15,6 +15,8 @@ namespace Trading {
   }; 
   inline auto OMOrderStateToString(OMOrderState side) -> std::string {
     switch(side) { 
+     case OMOrderState::INVALID : 
+       return "INVALID"; 
      case OMOrderState::PENDING_NEW : 
        return "PENDING_NEW"; 
      case OMOrderState::LIVE: 

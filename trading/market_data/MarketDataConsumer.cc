@@ -90,7 +90,7 @@ namespace Trading {
       __FILE__, __LINE__, __FUNCTION__,
       Common::getCurrentTimeStr(&time_str), snapshot_ptr.first, snapshot_ptr.second.toString()
     );  
-    if(snapshot_ptr.first != next_snapshot_sequence_number) { 
+    if(snapshot_ptr.first != static_cast<size_t>(next_snapshot_sequence_number)) { 
       have_complete_snapshot = false; 
       logger.log("%:% %() % Detected gap in snapshot stream expected:% found:% %.\n",
          __FILE__, __LINE__, __FUNCTION__,
@@ -199,7 +199,7 @@ namespace Trading {
   return; 
  }
 
- auto MarketDataConsumer::queueMessage(bool is_snapshot, const Exchange::MDPMarketUpdate *request) { 
+ auto MarketDataConsumer::queueMessage(bool is_snapshot, const Exchange::MDPMarketUpdate *request) -> void { 
   if(is_snapshot) { 
     if(snapshot_queued_msgs.find(request->sequence_number) != snapshot_queued_msgs.end()) { 
       logger.log(

@@ -66,7 +66,7 @@ namespace Trading {
     incoming_md_updates       = nullptr; 
   }
   
-  auto TradeEngine::start() noexcept -> void { 
+  auto TradeEngine::start() -> void { 
     is_running = true; 
     ASSERT(Common::createAndStartThread(-1, "Trading/TradeEngine", [this]() { 
       run();}) != nullptr, "Failed to start Trade Engine Thread."); 
@@ -101,7 +101,7 @@ namespace Trading {
     }
   }
 
-  auto TradeEngine::stop() noexcept -> void { 
+  auto TradeEngine::stop() -> void { 
    while(incoming_gateway_response->size() || incoming_md_updates->size()) { 
       logger.log("%:% %() % Sleeping till all updates are consumed ogw-size:% md-size:%\n", 
         __FILE__, __LINE__, __FUNCTION__,

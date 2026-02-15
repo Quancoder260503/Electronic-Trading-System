@@ -32,11 +32,12 @@ namespace Trading {
 
   private: 
     const ClientID client_id; 
-    std::string ip; 
+    Exchange::ClientRequestLFQueue *outgoing_request = nullptr; 
+    Exchange::ClientResponseLFQueue *incoming_response = nullptr;
+    std::string ip;  
     const std::string iface; 
     const int port = 0; 
-    Exchange::ClientRequestLFQueue *outgoing_request = nullptr; 
-    Exchange::ClientResponseLFQueue *incoming_response = nullptr; 
+    
     volatile bool is_running = false; 
     Logger logger; 
     size_t next_outgoing_sequence_number = 1; 

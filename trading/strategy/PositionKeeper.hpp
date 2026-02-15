@@ -43,13 +43,13 @@ namespace Trading {
    position += client_response->exec_quantity * side_value; 
    volume   += client_response->exec_quantity; 
    if(old_position * side_value >= 0) { 
-    open_vwap[side_index] += client_response->price * client_response->exec_quantity; 
+    open_vwap[side_index] += static_cast<double>(client_response->price * client_response->exec_quantity); 
    } else { 
     const auto opp_side_vwap = open_vwap[opp_side_index] / std::abs(old_position); 
     real_pnl += std::min(static_cast<int32_t>(client_response->exec_quantity), std::abs(old_position)) *
-                (opp_side_vwap - client_response->price) * side_value;
+                (opp_side_vwap - static_cast<double>(client_response->price)) * side_value;
     if(position * old_position < 0) { // flipped to opposite side 
-       open_vwap[side_index] = client_response->price * std::abs(position); 
+       open_vwap[side_index] = static_cast<double>(client_response->price * std::abs(position)); 
        open_vwap[opp_side_index] = 0; 
     }
    }
@@ -58,9 +58,9 @@ namespace Trading {
     unreal_pnl = 0; 
    } else { 
     if(position > 0) { 
-      unreal_pnl = (client_response->price - open_vwap[sideToIndex(Side::BUY)] / std::abs(position)) * std::abs(position); 
+      unreal_pnl = (static_cast<double>(client_response->price) - open_vwap[sideToIndex(Side::BUY)] / std::abs(position)) * std::abs(position); 
     } else { 
-      unreal_pnl = (open_vwap[sideToIndex(Side::SELL)] / std::abs(position) - client_response->price) * std::abs(position); 
+      unreal_pnl = (open_vwap[sideToIndex(Side::SELL)] / std::abs(position) - static_cast<double>(client_response->price)) * std::abs(position); 
     }
    }
    total_pnl = unreal_pnl + real_pnl; 

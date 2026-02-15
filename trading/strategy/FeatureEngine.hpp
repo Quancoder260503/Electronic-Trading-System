@@ -15,8 +15,8 @@ namespace Trading {
     auto onOrderBookUpdate(TickerID ticker_id, Price price, Side side, MarketOrderBook *book) noexcept -> void { 
       const auto bbo = book->getBBO(); 
       if(LIKELY(bbo->best_bid_price != PRICE_INVALID && bbo->best_ask_price != PRICE_INVALID)) { 
-        market_price = (bbo->best_bid_price * bbo->best_ask_quantity + 
-                        bbo->best_ask_price * bbo->best_bid_quantity) / 
+        market_price = (static_cast<double>(bbo->best_bid_price * bbo->best_ask_quantity) + 
+                        static_cast<double>(bbo->best_ask_price * bbo->best_bid_quantity)) / 
                         static_cast<double>(bbo->best_ask_quantity + bbo->best_bid_quantity); 
       }
       logger->log("%:% %() % ticker:% price:% side:% mkt-price:% agg-trade-ratio:%\n",

@@ -25,9 +25,9 @@ namespace Trading {
 
     auto cancelOrder(OMOrder *order) noexcept -> void;
 
-    auto moveOrder(OMOrder *order, TickerID ticker_id, Price price, Side side, Quantity quantity) noexcept; 
+    auto moveOrder(OMOrder *order, TickerID ticker_id, Price price, Side side, Quantity quantity) noexcept -> void; 
 
-    auto moveOrders(TickerID ticker_id, Price bid_price, Price ask_price, Quantity clip) noexcept; 
+    auto moveOrders(TickerID ticker_id, Price bid_price, Price ask_price, Quantity clip) noexcept -> void; 
 
     OrderManager() = delete;
 

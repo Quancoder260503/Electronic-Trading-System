@@ -172,7 +172,6 @@ int main(int argc, char **argv) {
   order_gateway = nullptr;
 
   std::this_thread::sleep_for(10s);
-
   exit(EXIT_SUCCESS);
   return 0; 
 }
