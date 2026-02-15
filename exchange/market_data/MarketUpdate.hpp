@@ -31,6 +31,12 @@ inline std::string marketUpdateTypeToString(MarketUpdateType type) {
     return "TRADE";
   case MarketUpdateType::INVALID:
     return "INVALID";
+  case MarketUpdateType::SNAPSHOT_START: 
+    return "SNAPSHOT_START"; 
+  case MarketUpdateType::SNAPSHOT_END: 
+    return "SNAPSHOT_END"; 
+  case MarketUpdateType::CLEAR: 
+    return "CLEAR"; 
   }
   return "UNKNOWN";
 }

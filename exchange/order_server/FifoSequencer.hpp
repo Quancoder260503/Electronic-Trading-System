@@ -22,7 +22,7 @@ namespace Exchange {
 
     auto sequenceAndPublish() { 
      if(UNLIKELY(!pending_size)) return; 
-      logger_->log("%:% %() % Processing % requests.\n", 
+      logger->log("%:% %() % Processing % requests.\n", 
         __FILE__, __LINE__, __FUNCTION__, 
         Common::getCurrentTimeStr(&time_str), pending_size); 
       std::sort(pending_client_requests.begin(), pending_client_requests.begin() + pending_size); 
@@ -61,5 +61,5 @@ namespace Exchange {
     };
     std::array<RecvTimeClientRequest, MATCHING_ENGINE_MAX_PENDING_REQUESTS> pending_client_requests; 
     size_t pending_size = 0; 
-  }
+  }; 
 }
