@@ -1,6 +1,8 @@
 #pragma once
 #include <cstdint>
 #include <limits>
+#include <sstream>
+#include <array> 
 
 #include "common/Macros.hpp"
 
@@ -12,7 +14,7 @@ typedef int64_t Price;
 typedef uint32_t Quantity;
 typedef uint64_t Priority;
 
-enum class Side : int8_t { INVALID = 0, BUY = 1, SELL = -1 };
+enum class Side : int8_t { INVALID = 0, BUY = 1, SELL = -1, MAX = 2};
 
 constexpr size_t LOG_QUEUE_SIZE =
     8 * 1024 * 1024;  // max_size of lock free queue
@@ -70,6 +72,14 @@ inline auto priorityToString(Priority priority) -> std::string {
   return std::to_string(priority);
 }
 
+inline constexpr auto sideToIndex(Side side) noexcept -> size_t { 
+  return static_cast<size_t>(side) + 1; 
+}
+
+inline constexpr auto sideToValue(Side side) noexcept -> int { 
+  return static_cast<int>(side); 
+}
+
 inline auto sideToString(Side side) -> std::string {
   switch (side) {
   case Side::BUY:
@@ -78,7 +88,79 @@ inline auto sideToString(Side side) -> std::string {
     return "SELL";
   case Side::INVALID:
     return "INVALID";
+  case Side::MAX : 
+    return "MAX"; 
   }
   return "UNKNOWN";
+}
+
+struct RiskConfig { 
+  // maximum order size that a strategy is allowed to send 
+  Quantity max_order_size = 0; 
+  // maximum position that a strategy is allowed to build 
+  Quantity max_position = 0; 
+  // maximum allowed loss before the trading strategy is shutoff from trading further
+  double max_loss = 0; 
+  auto toString() const { 
+    std::stringstream ss;
+    ss << "RiskCfg{"
+         << "max-order-size:" << quantityToString(max_order_size) << " "
+         << "max-position:"  << quantityToString(max_position)    << " "
+         << "max-loss:" << max_loss << "}";
+    return ss.str(); 
+  }
+};
+
+struct TradeEngineConfig { 
+  // What the trading strategies will use as the quantity for the order that they send out 
+  Quantity clip = 0; 
+  //Used by trading strategies to determine whether to send an order or not 
+  double threshold = 0; 
+  RiskConfig risk_config; 
+  auto toString() const { 
+    std::stringstream ss;
+    ss << "TradeEngineCfg{"
+         << "clip:" << quantityToString(clip) << " "
+         << "thresh:" << threshold << " "
+         << "risk:" << risk_config.toString()
+         << "}";
+    return ss.str();
+  } 
+}; 
+
+typedef std::array<TradeEngineConfig, MATCHING_ENGINE_MAX_TICKERS> TradeEngineConfigHashMap; 
+
+enum class AlgoType : int8_t { 
+ INVALID = 0, 
+ RANDOM = 1, 
+ MAKER  = 2, 
+ TAKER  = 3, 
+ MAX    = 4 
+}; 
+
+inline auto algoTypeToString(AlgoType type) -> std::string { 
+  switch (type) { 
+    case AlgoType::INVALID : 
+      return "INVALID"; 
+    case AlgoType::RANDOM : 
+      return "RANDOM"; 
+    case AlgoType::MAKER : 
+      return "MAKER"; 
+    case AlgoType::TAKER : 
+      return "TAKER"; 
+    case AlgoType::MAX : 
+      return "MAX"; 
+  }
+  return "UNKNOWN";
+}
+
+inline auto stringToAlgoType(const std::string &str) -> AlgoType { 
+  for(auto i = static_cast<int>(AlgoType::INVALID); i <= static_cast<int>(AlgoType::MAX); i++) { 
+    const auto algo_type = static_cast<AlgoType>(i); 
+    if(algoTypeToString(algo_type) == str) { 
+      return algo_type; 
+    }
+  }
+  return AlgoType::INVALID; 
 }
 }  // namespace Common

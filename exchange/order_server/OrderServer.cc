@@ -3,11 +3,12 @@
 namespace Exchange { 
     OrderServer::OrderServer(ClientRequestLFQueue *client_request, 
     ClientResponseLFQueue *client_response, 
-    const std::string &iface_, int port_) : 
+    const std::string &iface_, int port_) :
+
     iface(iface_), port(port_), 
     outgoing_responses(client_response),
     logger("exchange_order_server.log"), 
-    tcp_server(&logger), 
+    tcp_server(logger), 
     fifo_sequencer(client_request, &logger) {
       cid_next_expected_sequence_number.fill(1); 
       cid_next_outgoing_sequence_number.fill(1); 
