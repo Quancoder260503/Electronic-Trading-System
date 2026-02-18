@@ -1,0 +1,2 @@
+common/SocketUtil.hpp:110 createSocket() Tue Feb 17 23:46:14 2026 cfg:SocketCfg[ip:233.252.14.3 iface:lo port:20001 is_udp:1 is_listening:1 needs_SO_timestamp:0]
+trading/market_data/MarketDataConsumer.cc:49 run() Tue Feb 17 23:46:14 2026

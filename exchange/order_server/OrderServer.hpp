@@ -7,7 +7,7 @@
 #include "common/TCPServer.hpp"
 #include "ClientResponse.hpp"
 #include "ClientRequest.hpp"
-#include "FIFOSequencer.hpp"
+#include "FifoSequencer.hpp"
 
 namespace Exchange {
  class OrderServer { 
@@ -38,7 +38,7 @@ namespace Exchange {
            next_outgoing_sequence_number, 
            client_response->toString()
         );
-        ASSERT(cid_tcp_sockets[client_response->client_id] ! nullptr, 
+        ASSERT(cid_tcp_sockets[client_response->client_id] != nullptr, 
           "Do not have a TCPSocket for ClientID : " + std::to_string(client_response->client_id));
         
         cid_tcp_sockets[client_response->client_id]->send(&next_outgoing_sequence_number, sizeof(next_outgoing_sequence_number));
